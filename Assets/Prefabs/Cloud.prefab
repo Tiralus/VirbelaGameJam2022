@@ -9656,19 +9656,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f90988b593ac4a11998e6d3eff7d922, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Speed: 10
-  Min: {x: 0, y: 20, z: 0}
-  Max: {x: 1000, y: 35, z: 1000}
-  Rain: {fileID: 664097614}
-  RainDirectionMagnitude: 5
-  RainPower: 100
-  Left: 1401000061000000
-  Right: 1301000064000000
-  Forward: 1101000077000000
-  Backward: 1201000073000000
-  Up: 65000000
-  Down: 71000000
-  RainKey: 31000000
+  speed: 10
+  min: {x: 0, y: 20, z: 0}
+  max: {x: 1000, y: 35, z: 1000}
+  rain: {fileID: 664097614}
+  rainDirectionMagnitude: 5
+  rainPower: 100
+  lightning: {fileID: 0}
+  left: 1401000061000000
+  right: 1301000064000000
+  forward: 1101000077000000
+  backward: 1201000073000000
+  up: 65000000
+  down: 71000000
+  rainKey: 31000000
+  lightningKey: 32000000
 --- !u!198 &8734540360024397762
 ParticleSystem:
   m_ObjectHideFlags: 0
