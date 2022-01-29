@@ -9668,6 +9668,7 @@ MonoBehaviour:
   Backward: 1201000073000000
   Up: 65000000
   Down: 71000000
+  RainKey: 31000000
 --- !u!198 &8734540360024397762
 ParticleSystem:
   m_ObjectHideFlags: 0

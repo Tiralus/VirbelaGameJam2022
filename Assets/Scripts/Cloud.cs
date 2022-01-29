@@ -21,13 +21,19 @@ public class Cloud : MonoBehaviour
     public List<KeyCode> Up;
     public List<KeyCode> Down;
 
+    public List<KeyCode> RainKey;
+
     private ParticleSystem.ForceOverLifetimeModule _rainForce;
     private ParticleSystem.EmissionModule _rainEmmission;
+
+    private bool _rainOn = false;
 
     private void Start()
     {
         _rainForce = Rain.forceOverLifetime;
         _rainEmmission = Rain.emission;
+
+        EnableRain(_rainOn);
     }
 
     private void Update()
@@ -37,18 +43,11 @@ public class Cloud : MonoBehaviour
         position += direction.normalized * Speed * Time.deltaTime;
         position = ClampPosition(position);
         transform.position = position;
-        
-        ParticleSystem.MinMaxCurve rainForceX = _rainForce.x;
-        rainForceX.constant = -direction.x * RainDirectionMagnitude;
-        _rainForce.x = rainForceX;
-        
-        ParticleSystem.MinMaxCurve rainForceZ = _rainForce.z;
-        rainForceZ.constant = -direction.z * RainDirectionMagnitude;
-        _rainForce.z = rainForceZ;
 
-        ParticleSystem.MinMaxCurve rainRate = _rainEmmission.rateOverTime;
-        rainRate.constant = RainPower;
-        _rainEmmission.rateOverTime = rainRate;
+        if (IsKeyPressed(RainKey))
+            EnableRain(!_rainOn);
+
+        UpdateRain(direction);
     }
 
     private Vector3 ClampPosition(Vector3 position)
@@ -136,11 +135,49 @@ public class Cloud : MonoBehaviour
         return false;
     }
 
+    public bool IsKeyPressed(List<KeyCode> key)
+    {
+        foreach (KeyCode keyCode in key)
+        {
+            if (Input.GetKeyDown(keyCode))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;
         Vector3 size = Max - Min;
         Vector3 center = Min + (size / 2f);
         Gizmos.DrawWireCube(center, size);
+    }
+
+    public void EnableRain(bool enable)
+    {
+        _rainOn = enable;
+
+        var emission = Rain.emission;
+        emission.enabled = _rainOn;
+    }
+
+    private void UpdateRain(Vector3 direction)
+    {
+        if (!_rainOn) return;
+
+        ParticleSystem.MinMaxCurve rainForceX = _rainForce.x;
+        rainForceX.constant = -direction.x * RainDirectionMagnitude;
+        _rainForce.x = rainForceX;
+
+        ParticleSystem.MinMaxCurve rainForceZ = _rainForce.z;
+        rainForceZ.constant = -direction.z * RainDirectionMagnitude;
+        _rainForce.z = rainForceZ;
+
+        ParticleSystem.MinMaxCurve rainRate = _rainEmmission.rateOverTime;
+        rainRate.constant = RainPower;
+        _rainEmmission.rateOverTime = rainRate;
     }
 }
