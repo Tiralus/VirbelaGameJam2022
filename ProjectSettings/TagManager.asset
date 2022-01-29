@@ -45,3 +45,15 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Cloud
+    uniqueID: 2729857337
+    locked: 0
+  - name: CloudTrail
+    uniqueID: 1757434277
+    locked: 0
+  - name: Rain
+    uniqueID: 3279735017
+    locked: 0
+  - name: Lightning
+    uniqueID: 2264785435
+    locked: 0
