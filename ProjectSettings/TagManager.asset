@@ -41,3 +41,9 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: CloudTrail
+    uniqueID: 341602565
+    locked: 0
+  - name: Cloud
+    uniqueID: 580810629
+    locked: 0
