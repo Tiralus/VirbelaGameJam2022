@@ -4,83 +4,89 @@ using UnityEngine;
 public class Cloud : MonoBehaviour
 {
     [Header("Movement")]
-    public float Speed;
-    public Vector3 Min;
-    public Vector3 Max;
+    public float speed;
+    public Vector3 min;
+    public Vector3 max;
     
     [Header("Rain")]
-    public ParticleSystem Rain;
-    public float RainDirectionMagnitude;
-    public float RainPower;
+    public ParticleSystem rain;
+    public float rainDirectionMagnitude;
+    public float rainPower;
+
+    [Header("Lightning")]
+    public ParticleSystem lightning;
     
     [Header("Input")]
-    public List<KeyCode> Left;
-    public List<KeyCode> Right;
-    public List<KeyCode> Forward;
-    public List<KeyCode> Backward;
-    public List<KeyCode> Up;
-    public List<KeyCode> Down;
+    public List<KeyCode> left;
+    public List<KeyCode> right;
+    public List<KeyCode> forward;
+    public List<KeyCode> backward;
+    public List<KeyCode> up;
+    public List<KeyCode> down;
+
+    public List<KeyCode> rainKey;
+    public List<KeyCode> lightningKey;
 
     private ParticleSystem.ForceOverLifetimeModule _rainForce;
     private ParticleSystem.EmissionModule _rainEmmission;
 
+    private bool _rainOn = false;
+
     private void Start()
     {
-        _rainForce = Rain.forceOverLifetime;
-        _rainEmmission = Rain.emission;
+        _rainForce = rain.forceOverLifetime;
+        _rainEmmission = rain.emission;
+
+        EnableRain(_rainOn);
     }
 
     private void Update()
     {
         Vector3 position = transform.position;
         Vector3 direction = GetInputDirection();
-        position += direction.normalized * Speed * Time.deltaTime;
+        position += direction.normalized * speed * Time.deltaTime;
         position = ClampPosition(position);
         transform.position = position;
-        
-        ParticleSystem.MinMaxCurve rainForceX = _rainForce.x;
-        rainForceX.constant = -direction.x * RainDirectionMagnitude;
-        _rainForce.x = rainForceX;
-        
-        ParticleSystem.MinMaxCurve rainForceZ = _rainForce.z;
-        rainForceZ.constant = -direction.z * RainDirectionMagnitude;
-        _rainForce.z = rainForceZ;
 
-        ParticleSystem.MinMaxCurve rainRate = _rainEmmission.rateOverTime;
-        rainRate.constant = RainPower;
-        _rainEmmission.rateOverTime = rainRate;
+        if (IsKeyPressed(rainKey))
+            EnableRain(!_rainOn);
+
+        UpdateRain(direction);
+
+        if (IsKeyPressed(lightningKey))
+            ActivateLightning();
     }
 
     private Vector3 ClampPosition(Vector3 position)
     {
-        if (position.x > Max.x)
+        if (position.x > max.x)
         {
-            position.x = Max.x;
+            position.x = max.x;
         }
         
-        if (position.y > Max.y)
+        if (position.y > max.y)
         {
-            position.y = Max.y;
+            position.y = max.y;
         }
         
-        if (position.z > Max.z)
+        if (position.z > max.z)
         {
-            position.z = Max.z;
+            position.z = max.z;
         }
         
-        if (position.x < Min.x)
+        if (position.x < min.x)
         {
-            position.x = Min.x;
+            position.x = min.x;
         }
         
-        if (position.y < Min.y)
+        if (position.y < min.y)
         {
-            position.y = Min.y;
+            position.y = min.y;
         }
         
-        if (position.z < Min.z)
+        if (position.z < min.z)
         {
-            position.z = Min.z;
+            position.z = min.z;
         }
 
         return position;
@@ -90,32 +96,32 @@ public class Cloud : MonoBehaviour
     {
         Vector3 direction = Vector2.zero;
 
-        if (IsKeyDown(Left))
+        if (IsKeyDown(left))
         {
             direction.x -= 1;
         }
         
-        if (IsKeyDown(Right))
+        if (IsKeyDown(right))
         {
             direction.x += 1;
         }
         
-        if (IsKeyDown(Backward))
+        if (IsKeyDown(backward))
         {
             direction.z -= 1;
         }
         
-        if (IsKeyDown(Forward))
+        if (IsKeyDown(forward))
         {
             direction.z += 1;
         }
         
-        if (IsKeyDown(Down))
+        if (IsKeyDown(down))
         {
             direction.y -= 1;
         }
         
-        if (IsKeyDown(Up))
+        if (IsKeyDown(up))
         {
             direction.y += 1;
         }
@@ -136,11 +142,52 @@ public class Cloud : MonoBehaviour
         return false;
     }
 
+    public bool IsKeyPressed(List<KeyCode> key)
+    {
+        foreach (KeyCode keyCode in key)
+        {
+            if (Input.GetKeyDown(keyCode))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;
-        Vector3 size = Max - Min;
-        Vector3 center = Min + (size / 2f);
+        Vector3 size = max - min;
+        Vector3 center = min + (size / 2f);
         Gizmos.DrawWireCube(center, size);
+    }
+
+    public void EnableRain(bool enable)
+    {
+        _rainOn = enable;
+        _rainEmmission.enabled = _rainOn;
+    }
+
+    private void UpdateRain(Vector3 direction)
+    {
+        if (!_rainOn) return;
+
+        ParticleSystem.MinMaxCurve rainForceX = _rainForce.x;
+        rainForceX.constant = -direction.x * rainDirectionMagnitude;
+        _rainForce.x = rainForceX;
+
+        ParticleSystem.MinMaxCurve rainForceZ = _rainForce.z;
+        rainForceZ.constant = -direction.z * rainDirectionMagnitude;
+        _rainForce.z = rainForceZ;
+
+        ParticleSystem.MinMaxCurve rainRate = _rainEmmission.rateOverTime;
+        rainRate.constant = rainPower;
+        _rainEmmission.rateOverTime = rainRate;
+    }
+
+    private void ActivateLightning()
+    {
+        lightning.Play();
     }
 }
