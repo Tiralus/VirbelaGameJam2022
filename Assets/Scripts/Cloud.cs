@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,11 +9,6 @@ public class Cloud : MonoBehaviour
     public Vector3 Min;
     public Vector3 Max;
     public LayerMask GroundLayer;
-    
-    [Header("Rain")]
-    public ParticleSystem Rain;
-    public float RainDirectionMagnitude;
-    public float RainPower;
 
     [Header("Lightning")]
     public ParticleSystem lightning;
@@ -28,16 +24,14 @@ public class Cloud : MonoBehaviour
     public List<KeyCode> rainKey;
     public List<KeyCode> lightningKey;
 
-    private ParticleSystem.ForceOverLifetimeModule _rainForce;
-    private ParticleSystem.EmissionModule _rainEmmission;
     private Vector3 _movePosition;
 
-    private bool _rainOn = false;
+    public Rain rain;
 
     private void Start()
     {
-        _rainForce = Rain.forceOverLifetime;
-        _rainEmmission = Rain.emission;
+        rain = GetComponent<Rain>();
+
         _movePosition = transform.position;
     }
 
@@ -55,20 +49,12 @@ public class Cloud : MonoBehaviour
         _movePosition += direction.normalized * Speed * Time.deltaTime;
         _movePosition = ClampPosition(_movePosition);
 
-        transform.position = groundPosition + _movePosition;;
-        
-        ParticleSystem.MinMaxCurve rainForceX = _rainForce.x;
-        rainForceX.constant = -direction.x * RainDirectionMagnitude;
-        _rainForce.x = rainForceX;
-        
-        ParticleSystem.MinMaxCurve rainForceZ = _rainForce.z;
-        rainForceZ.constant = -direction.z * RainDirectionMagnitude;
-        _rainForce.z = rainForceZ;
+        transform.position = groundPosition + _movePosition;
+
+        rain.UpdateRainParticles(direction);
 
         if (IsKeyPressed(rainKey))
-            EnableRain(!_rainOn);
-
-        UpdateRain(direction);
+            rain.EnableRain(!rain.IsRaining());
 
         if (IsKeyPressed(lightningKey))
             ActivateLightning();
@@ -178,29 +164,6 @@ public class Cloud : MonoBehaviour
         Vector3 size = Max - Min;
         Vector3 center = Min + (size / 2f);
         Gizmos.DrawWireCube(center, size);
-    }
-
-    public void EnableRain(bool enable)
-    {
-        _rainOn = enable;
-        _rainEmmission.enabled = _rainOn;
-    }
-
-    private void UpdateRain(Vector3 direction)
-    {
-        if (!_rainOn) return;
-
-        ParticleSystem.MinMaxCurve rainForceX = _rainForce.x;
-        rainForceX.constant = -direction.x * RainDirectionMagnitude;
-        _rainForce.x = rainForceX;
-
-        ParticleSystem.MinMaxCurve rainForceZ = _rainForce.z;
-        rainForceZ.constant = -direction.z * RainDirectionMagnitude;
-        _rainForce.z = rainForceZ;
-
-        ParticleSystem.MinMaxCurve rainRate = _rainEmmission.rateOverTime;
-        rainRate.constant = RainPower;
-        _rainEmmission.rateOverTime = rainRate;
     }
 
     private void ActivateLightning()
