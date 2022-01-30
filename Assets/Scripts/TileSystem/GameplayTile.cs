@@ -3,6 +3,10 @@ using UnityEngine;
 
 public class GameplayTile : BaseTile
 {
+    [Header("Forest")]
+    public float ForestSpreadChance;
+    public float ForestSpreadCooldown;
+    
     [Header("Grass")]
     public float MaxWaterSaturation;
     public float WaterDesaturationRate;
@@ -11,7 +15,10 @@ public class GameplayTile : BaseTile
     public float GrassSpreadCooldown;
     public ParticleSystem Foliage;
     public float FoliageMaxRate;
-
+    public float ChangeToForestSaturationThreshold;
+    public float ChangeToForestChance;
+    public float ChangeToForestCooldown;
+    
     [Header("Corruption")]
     public float CorruptionSpreadChanceRate;
     public float CorruptionSpreadCooldown;
@@ -30,7 +37,7 @@ public class GameplayTile : BaseTile
     public int FireTickDamage;
 
     [Header("General")]
-    public int MaxHealth;
+    public List<int> MaxHealthByState;
     public float HealingCooldown;
     public ParticleSystem Smoke;
     public float SmokeMaxRate;
@@ -44,6 +51,7 @@ public class GameplayTile : BaseTile
     private float _corruptionSpreadChance;
     private float _fireSpreadChance;
     private float _fireSpreadCooldown;
+    private float _changeToForestCooldown;
     private ParticleSystem.EmissionModule _foliageEmission;
     private ParticleSystem.EmissionModule _evilEmission;
     private ParticleSystem.EmissionModule _fireEmission;
@@ -55,6 +63,7 @@ public class GameplayTile : BaseTile
     public const int corruptionState = 0;
     public const int neutralState = 1;
     public const int grassState = 2;
+    public const int forestState = 3;
 
     public System.Action OnStateChanged;
 
@@ -92,6 +101,12 @@ public class GameplayTile : BaseTile
 
         switch (CurrentState)
         {
+            case forestState:
+                SpreadForest();
+                SpreadFire();
+                CheckHealing(Selected && Rain.Instance.IsRaining(), Rain.Instance.WaterHealAmount);
+                CheckHealth();
+                break;
             case grassState:
                 SpreadGrass();
                 SpreadFire();
@@ -103,6 +118,28 @@ public class GameplayTile : BaseTile
                 SpreadFire();
                 CheckHealth();
                 break;
+        }
+    }
+
+    private void SpreadForest()
+    {
+        if (_spreadCooldown > 0f)
+        {
+            _spreadCooldown -= Time.deltaTime;
+        }
+        else
+        {
+            _spreadCooldown = ForestSpreadCooldown;
+
+            if (Random.value <= ForestSpreadChance)
+            {
+                GameplayTile neighbor = SpreadToNeighbor(overrideState: grassState);
+            
+                if (neighbor != null)
+                {
+                    neighbor._spreadCooldown = GrassSpreadCooldown;
+                }
+            }
         }
     }
 
@@ -141,10 +178,8 @@ public class GameplayTile : BaseTile
         if (_spreadCooldown > 0f)
         {
             _spreadCooldown -= Time.deltaTime;
-            return;
         }
-
-        if (_waterSaturation >= GrassSpreadWaterSaturationThreshold)
+        else if (_waterSaturation >= GrassSpreadWaterSaturationThreshold)
         {
             _spreadCooldown = GrassSpreadCooldown;
 
@@ -156,6 +191,20 @@ public class GameplayTile : BaseTile
                 {
                     neighbor._spreadCooldown = GrassSpreadCooldown;
                 }
+            }
+        }
+
+        if (_changeToForestCooldown > 0f)
+        {
+            _changeToForestCooldown -= Time.deltaTime;
+        }
+        else if (_waterSaturation >= ChangeToForestSaturationThreshold)
+        {
+            _changeToForestCooldown = ChangeToForestCooldown;
+            
+            if (Random.value <= ChangeToForestChance)
+            {
+                ChangeStateByIdx(forestState);
             }
         }
     }
@@ -234,7 +283,7 @@ public class GameplayTile : BaseTile
         }
 
         ParticleSystem.MinMaxCurve smokeRate = _smokeEmission.rateOverTime;
-        float healthRatio = ((float) _health / (float) MaxHealth);
+        float healthRatio = ((float) _health / (float) MaxHealthByState[CurrentState]);
         smokeRate.constant = SmokeMaxRate * (1 - healthRatio);
         _smokeEmission.rateOverTime = smokeRate;
         
@@ -286,9 +335,9 @@ public class GameplayTile : BaseTile
         {
             _health += healAmount;
             
-            if (_health > MaxHealth)
+            if (_health > MaxHealthByState[CurrentState])
             {
-                _health = MaxHealth;
+                _health = MaxHealthByState[CurrentState];
             }
             
             _healingTickCooldown = HealingCooldown;
@@ -311,7 +360,8 @@ public class GameplayTile : BaseTile
         _fireSpreadChance = 0f;
         _fireSpreadCooldown = 0f;
         _fireTickCooldown = 0f;
-        _health = MaxHealth;
+        _changeToForestCooldown = 0f;
+        _health = MaxHealthByState[CurrentState];
         
         _fireEmission = Fire.emission;
         _smokeEmission = Smoke.emission;
@@ -321,7 +371,7 @@ public class GameplayTile : BaseTile
         _fireEmission.rateOverTime = fireRate;
         
         ParticleSystem.MinMaxCurve smokeRate = _smokeEmission.rateOverTime;
-        float healthRatio = ((float) _health / (float) MaxHealth);
+        float healthRatio = ((float) _health / (float) MaxHealthByState[CurrentState]);
         smokeRate.constant = SmokeMaxRate * (1 - healthRatio);
         _smokeEmission.rateOverTime = smokeRate;
         
@@ -355,7 +405,7 @@ public class GameplayTile : BaseTile
         Collider.enabled = true;
     }
 
-    private GameplayTile SpreadToNeighbor(int damage = 0)
+    private GameplayTile SpreadToNeighbor(int damage = 0, int overrideState = -1)
     {
         List<GameplayTile> randomNeighbors = new List<GameplayTile>(_neighbors);
 
@@ -366,14 +416,15 @@ public class GameplayTile : BaseTile
             randomNeighbors.RemoveAt(randomIndex);
 
             if (randomNeighbor == null || 
-                randomNeighbor.CurrentState == CurrentState)
+                randomNeighbor.CurrentState == CurrentState ||
+                randomNeighbor.CurrentState == overrideState)
             {
                 continue;
             }
 
             if (randomNeighbor.CurrentState == neutralState)
             {
-                randomNeighbor.ChangeStateByIdx(CurrentState);
+                randomNeighbor.ChangeStateByIdx(overrideState != -1 ? overrideState : CurrentState);
             }
             else if (damage > 0)
             {
