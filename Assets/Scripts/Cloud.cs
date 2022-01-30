@@ -190,6 +190,7 @@ public class Cloud : MonoBehaviour
 
     private void ActivateLightning()
     {
+        AudioManager.instance.PlaySound("Thunder");
         lightning.Play();
     }
 }
