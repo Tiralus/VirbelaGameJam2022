@@ -154,9 +154,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameUI: {fileID: 585028727}
-  playerPerc: 50
-  enemyPerc: 50
-  Level: {fileID: 1375059153796489001, guid: 8cc93b018e4151a4b80219a23a138f89, type: 3}
+  playerPerc: 0.5
+  enemyPerc: 0.5
+  Levels:
+  - {fileID: 1375059153796489001, guid: 8cc93b018e4151a4b80219a23a138f89, type: 3}
+  - {fileID: 1375059153796489001, guid: db4768bc255d677449c84a0260d93dbc, type: 3}
+  - {fileID: 1375059153796489001, guid: 328927bbbe8caea46807690dcc5bba97, type: 3}
+  - {fileID: 1375059153796489001, guid: bad050f217585f241b9451da1fe27a73, type: 3}
+  - {fileID: 1375059153796489001, guid: ff2555572f3ff664995b7912f16d4ae1, type: 3}
+  - {fileID: 1375059153796489001, guid: ac3badc05e26cf143989487413cb3f81, type: 3}
+  - {fileID: 1375059153796489001, guid: c98c103d41e7aa448a521bd0aa3cb05c, type: 3}
+  - {fileID: 1375059153796489001, guid: de8b75176351bf94e9c4f62adadaa9fd, type: 3}
+  - {fileID: 1375059153796489001, guid: 5bcc0369aba1a004c98d17e9f7733334, type: 3}
+  levelIndex: 0
 --- !u!4 &269854528
 Transform:
   m_ObjectHideFlags: 0
@@ -1003,7 +1013,7 @@ PrefabInstance:
     - target: {fileID: 8080169698302309230, guid: d25202f97a36c4da5bc2dac0953f2df5,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.22498457
+      value: 0.22498454
       objectReference: {fileID: 0}
     - target: {fileID: 8080169698302309230, guid: d25202f97a36c4da5bc2dac0953f2df5,
         type: 3}

@@ -9,27 +9,32 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance;
 
     public GameUI gameUI;
-    [Tooltip("Percentage of grass tiles present for player to win")] 
-    public float playerPerc = 50f;
-    [Tooltip("Percentage of corruption tiles present for enemy to win")] 
-    public float enemyPerc = 50f;
+    [Tooltip("Percentage of grass tiles present for player to win")]
+    public float playerPerc = 0.5f;
+    [Tooltip("Percentage of corruption tiles present for enemy to win")]
+    public float enemyPerc = 0.5f;
 
-    private bool gamePaused = false;
-    public bool IsPaused() => gamePaused;
+    public bool IsPaused { get; private set; }
 
-    private bool inPlay = false;
-    public bool InPlay() => inPlay;
+    public bool InPlay { get; private set; }
 
-    public GameObject Level;
+    public List<GameObject> Levels;
+    public int levelIndex = 0;
 
     private void Awake()
     {
-        Instance = this;
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
 
-        inPlay = false;
-        PauseGame(false);
+        DontDestroyOnLoad(gameObject);
 
-        Instantiate(Level);
+        StartLevel(levelIndex);
     }
 
     private void Start()
@@ -42,14 +47,42 @@ public class GameManager : MonoBehaviour
         ThreeDeeTiles.UpdateTiles -= CheckEndGame;
     }
 
+    public void ReloadLevel()
+    {
+        Scene scene = SceneManager.GetActiveScene();
+        SceneManager.LoadScene(scene.name);
+
+        if (gameUI == null)
+            gameUI = FindObjectOfType<GameUI>();
+
+        StartLevel(levelIndex);
+    }
+
+    public void LoadNextLevel()
+    {
+        if (levelIndex < Levels.Count - 1)
+            levelIndex++;
+        else
+            levelIndex = 0;
+
+        ReloadLevel();
+    }
+
+    public void StartLevel(int index)
+    {
+        InPlay = false;
+        PauseGame(false);
+        Instantiate(Levels[levelIndex]);
+    }
+
     public void StartGame()
     {
-        inPlay = true;
+        InPlay = true;
     }
 
     private void CheckEndGame(float grassPerc, float corruptionPerc)
     {
-        if (!InPlay()) return;
+        if (!InPlay) return;
 
         if (grassPerc >= playerPerc || corruptionPerc == 0f)
             EndGame(true);
@@ -59,21 +92,15 @@ public class GameManager : MonoBehaviour
 
     public void EndGame(bool win)
     {
-        if (!InPlay()) return;
+        if (!InPlay) return;
 
-        inPlay = false;
+        InPlay = false;
         gameUI.ShowEndGameMenu(win);
     }
 
     public void PauseGame(bool pause)
     {
-        gamePaused = pause;
-        Time.timeScale = gamePaused ? 0f : 1f;
-    }
-
-    public void ResetGame()
-    {
-        Scene scene = SceneManager.GetActiveScene(); 
-        SceneManager.LoadScene(scene.name);
+        IsPaused = pause;
+        Time.timeScale = IsPaused ? 0f : 1f;
     }
 }

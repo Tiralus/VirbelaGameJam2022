@@ -97,7 +97,7 @@ public class GameplayTile : BaseTile
     {
         base.Update();
 
-        if (!GameManager.Instance.InPlay()) return;
+        if (!GameManager.Instance.InPlay) return;
 
         switch (CurrentState)
         {
@@ -262,7 +262,7 @@ public class GameplayTile : BaseTile
                 }
             }
 
-            _health -= Cloud.Instance.LightningDamage;
+            TakeDamage(Cloud.Instance.LightningDamage);
         }
 
         ParticleSystem.MinMaxCurve fireRate = _fireEmission.rateOverTime;
@@ -273,7 +273,7 @@ public class GameplayTile : BaseTile
         {
             if (_fireTickCooldown <= 0f)
             {
-                _health -= FireTickDamage;
+                TakeDamage(FireTickDamage);
                 _fireTickCooldown = FireTickCooldown;
             }
             else
@@ -428,7 +428,7 @@ public class GameplayTile : BaseTile
             }
             else if (damage > 0)
             {
-                randomNeighbor._health -= damage;
+                randomNeighbor.TakeDamage(damage);
             }
             
             return randomNeighbor;
@@ -464,5 +464,12 @@ public class GameplayTile : BaseTile
             randomNeighbor._fireSpreadCooldown = FireSpreadCooldown;
             break;
         }
+    }
+
+    private void TakeDamage(int damage)
+    {
+        _health -= damage;
+        _corruptionSpreadChance = 0f;
+        _waterSaturation = 0f;
     }
 }

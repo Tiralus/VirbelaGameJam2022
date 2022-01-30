@@ -59,7 +59,7 @@ public class Cloud : MonoBehaviour
 
     private void Update()
     {
-        if (GameManager.Instance.IsPaused() || !GameManager.Instance.InPlay()) return;
+        if (GameManager.Instance.IsPaused || !GameManager.Instance.InPlay) return;
 
         Vector3 direction = GetInputDirection();
 
@@ -229,7 +229,7 @@ public class Cloud : MonoBehaviour
             }
         }
 
-        return false;
+         return false;
     }
 
     private void OnDrawGizmosSelected()
