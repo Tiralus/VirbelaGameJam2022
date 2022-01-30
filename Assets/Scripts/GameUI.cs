@@ -35,8 +35,10 @@ public class GameUI : MonoBehaviour
             waterMeter.maxValue = cloud.rain.waterCapacity;
             UpdateWaterMeter(waterMeter.maxValue);
         }
-
+        
+        AudioManager.instance.PlayMusic("Drizzle");
         mainMenu.SetActive(true);
+        
         gameHUD.SetActive(false);
         pauseMenu.SetActive(false);
         endGameMenu.SetActive(false);
@@ -56,6 +58,8 @@ public class GameUI : MonoBehaviour
     {
         mainMenu.SetActive(false);
         gameHUD.SetActive(true);
+        AudioManager.instance.StopMusic("Drizzle");
+        AudioManager.instance.PlayMusic("Thunderstorm");
 
         // TODO: call to start game
     }

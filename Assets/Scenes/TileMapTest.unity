@@ -189,6 +189,74 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &567399515
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 567399517}
+  - component: {fileID: 567399516}
+  m_Layer: 0
+  m_Name: AudioManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &567399516
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 567399515}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e32315a028dae845bd957ebdb670fdd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  volumeThreshold: 0
+  mixer: {fileID: 24100000, guid: 25cf6a3699aa36145bc1b73506afbe75, type: 2}
+  music:
+  - name: Thunderstorm
+    clip: {fileID: 8300000, guid: c57f51396f6095240a2d56a5e1735c6c, type: 3}
+    volume: 1
+    pitch: 1
+    randomVolume: 0
+    randomPitch: 0
+    loop: 1
+  - name: Drizzle
+    clip: {fileID: 8300000, guid: a1b04c58f507dfb4cbc1ec549a150dfb, type: 3}
+    volume: 1
+    pitch: 1
+    randomVolume: 0
+    randomPitch: 0
+    loop: 1
+  soundEffects:
+  - name: Thunder
+    clip: {fileID: 8300000, guid: 48ca20273b6eb454b8cdc7dca68391cd, type: 3}
+    volume: 1
+    pitch: 1
+    randomVolume: 0.5
+    randomPitch: 0.5
+    loop: 0
+--- !u!4 &567399517
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 567399515}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 10.145449, y: 18.630451, z: -26.563377}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &577166906
 GameObject:
   m_ObjectHideFlags: 0
