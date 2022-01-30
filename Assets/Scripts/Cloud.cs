@@ -8,6 +8,8 @@ public class Cloud : MonoBehaviour
     
     [Header("Movement")]
     public float Speed;
+    public float FastSpeed;
+    public float AceelerationMultiplier;
     public Vector3 Min;
     public Vector3 Max;
     public LayerMask GroundLayer;
@@ -26,6 +28,7 @@ public class Cloud : MonoBehaviour
     public List<KeyCode> Up;
     public List<KeyCode> Down;
 
+    public List<KeyCode> speedKey;
     public List<KeyCode> rainKey;
     public List<KeyCode> lightningKey;
 
@@ -36,6 +39,9 @@ public class Cloud : MonoBehaviour
     private BaseTile _selectedTile;
     
     public bool IsLightning { get; private set; }
+
+    private float _CurrentSpeed;
+    private Vector3 _CurrentDirection = Vector3.zero;
 
     private void Start()
     {
@@ -49,10 +55,31 @@ public class Cloud : MonoBehaviour
 
         Vector3 direction = GetInputDirection();
 
-        transform.position += CameraTransform.TransformDirection(direction).normalized * Speed * Time.deltaTime;
+        if (direction == Vector3.zero)
+        {
+            _CurrentSpeed = Mathf.Lerp(_CurrentSpeed, 0, Time.deltaTime * AceelerationMultiplier);
+        }
+        else
+        {
+            bool isFastSpeed = IsKeyDown(speedKey);
+            float targetSpeed = 0.0f;
+            if (isFastSpeed && rain.CanRain())
+            {
+                targetSpeed = FastSpeed;
+                rain.UseWater(false);
+            }
+            else
+            {
+                targetSpeed = Speed;
+            }
+            _CurrentSpeed = Mathf.Lerp(_CurrentSpeed, targetSpeed, Time.deltaTime * AceelerationMultiplier);
+            _CurrentDirection = Vector3.Lerp(_CurrentDirection, CameraTransform.TransformDirection(direction).normalized, Time.deltaTime * AceelerationMultiplier);
+        }
+
+        transform.position += _CurrentDirection * _CurrentSpeed * Time.deltaTime;
         transform.position = ClampPosition(transform.position);
         
-        rain.UpdateRainParticles(direction);
+        rain.UpdateRainParticles(_CurrentDirection * (_CurrentSpeed / FastSpeed));
 
         if (IsKeyPressed(rainKey))
             rain.EnableRain(!rain.IsRaining());

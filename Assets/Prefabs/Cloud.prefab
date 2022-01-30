@@ -14742,8 +14742,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_BindingMode: 1
   m_FollowOffset: {x: 46.3, y: 27.69, z: -47.3}
-  m_XDamping: 20
-  m_YDamping: 20
+  m_XDamping: 10
+  m_YDamping: 10
   m_ZDamping: 2
   m_AngularDampingMode: 0
   m_PitchDamping: 0
@@ -19657,6 +19657,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Speed: 10
+  FastSpeed: 15
+  AceelerationMultiplier: 4
   Min: {x: -119.17, y: 20, z: -35.6}
   Max: {x: 52, y: 40, z: 127.8}
   GroundLayer:
@@ -19672,6 +19674,7 @@ MonoBehaviour:
   Backward: 1201000073000000
   Up: 
   Down: 
+  speedKey: 300100002f010000
   rainKey: 31000000
   lightningKey: 32000000
   rain: {fileID: 2820381174761278975}

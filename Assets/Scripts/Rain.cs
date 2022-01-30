@@ -75,9 +75,9 @@ public class Rain : MonoBehaviour
         _rainEmmission.rateOverTime = rainRate;
     }
 
-    public void UseWater()
+    public void UseWater(bool checkIsRaining = true)
     {
-        if (!IsRaining()) return;
+        if (checkIsRaining && !IsRaining()) return;
 
         _waterCurrentAmount -= waterUseRate * Time.deltaTime;
         _waterCurrentAmount = Mathf.Clamp(_waterCurrentAmount, 0, waterCapacity);
