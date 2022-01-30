@@ -20,12 +20,16 @@ public class GameManager : MonoBehaviour
     private bool inPlay = false;
     public bool InPlay() => inPlay;
 
+    public GameObject Level;
+
     private void Awake()
     {
         Instance = this;
 
         inPlay = false;
         PauseGame(false);
+
+        Instantiate(Level);
     }
 
     private void Start()
@@ -55,8 +59,9 @@ public class GameManager : MonoBehaviour
 
     public void EndGame(bool win)
     {
-        inPlay = false;
+        if (!InPlay()) return;
 
+        inPlay = false;
         gameUI.ShowEndGameMenu(win);
     }
 

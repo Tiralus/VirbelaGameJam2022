@@ -14,6 +14,7 @@ public class ThreeDeeTiles : MonoBehaviour
     };
 
     public static ThreeDeeTiles Instance;
+    public Vector3 Min, Max;
 
     public List<TilePairBridge> Tiles;
 
@@ -40,6 +41,14 @@ public class ThreeDeeTiles : MonoBehaviour
         if (renderer != null)
         {
             renderer.enabled = false;
+        }
+
+        // HACK
+        Cloud cloudRef = FindObjectOfType<Cloud>();
+        if (cloudRef != null)
+        {
+            cloudRef.Min = Min;
+            cloudRef.Max = Max;
         }
     }
 
@@ -121,7 +130,15 @@ public class ThreeDeeTiles : MonoBehaviour
         {
             return null;
         }
-        
+
         return _baseTiles[Random.Range(0, _baseTiles.Count)];
+    }
+    
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.red;
+        Vector3 size = Max - Min;
+        Vector3 center = Min + (size / 2f);
+        Gizmos.DrawWireCube(center, size);
     }
 }
