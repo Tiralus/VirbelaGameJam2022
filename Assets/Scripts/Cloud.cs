@@ -25,15 +25,15 @@ public class Cloud : MonoBehaviour
     public List<KeyCode> rainKey;
     public List<KeyCode> lightningKey;
 
-    private Vector3 _movePosition;
-
     public Rain rain;
+
+    public Transform DropShadow;
+
+    private BaseTile _selectedTile;
 
     private void Start()
     {
         rain = GetComponent<Rain>();
-
-        _movePosition = transform.position;
     }
 
     private void Update()
@@ -50,6 +50,36 @@ public class Cloud : MonoBehaviour
 
         if (IsKeyPressed(lightningKey))
             ActivateLightning();
+
+        BaseTile previousSelectedTile = _selectedTile;
+        
+        if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit) &&
+            hit.collider != null)
+        {
+            BaseTile tile = hit.collider.GetComponent<BaseTile>();
+            
+            if (tile != null &&
+                _selectedTile != tile)
+            {
+                tile.Select();
+                _selectedTile = tile;
+            }
+
+            if (hit.collider is SphereCollider sphereCollider)
+            {
+                Vector3 dropShadowPosition = DropShadow.position;
+                dropShadowPosition.y = sphereCollider.transform.position.y + sphereCollider.center.y;
+                DropShadow.position = dropShadowPosition;
+            }
+        }
+
+        if (_selectedTile != previousSelectedTile &&
+            previousSelectedTile != null)
+        {
+            previousSelectedTile.Deselect();
+        }
+
+        rain.isOverWaterSource = _selectedTile != null && _selectedTile is WaterTile;
     }
 
     private Vector3 ClampPosition(Vector3 position)

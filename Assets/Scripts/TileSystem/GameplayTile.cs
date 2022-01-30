@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameplayTile : MonoBehaviour
+public class GameplayTile : BaseTile
 {
     public Collider Collider;
     public int CurrentState = 0;
