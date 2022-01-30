@@ -47,8 +47,9 @@ public class GameUI : MonoBehaviour
             cloud.rain.UpdateWaterResource += UpdateWaterMeter;
             waterMeter.maxValue = cloud.rain.waterCapacity;
             UpdateWaterMeter(waterMeter.maxValue);
-        }
 
+            cloud.UpdateLightningResource += UpdateLightningMeter;
+        }
 
         AudioManager.instance.PlayMusic("Drizzle");
         mainMenu.SetActive(true);
@@ -140,9 +141,9 @@ public class GameUI : MonoBehaviour
 
     public void ShowEndGameMenu(bool win)
     {
+        winLabel.text = win ? winText : loseText;
+
         gameHUD.SetActive(false);
         endGameMenu.SetActive(true);
-
-        winLabel.text = win ? winText : loseText;
     }
 }
