@@ -3381,6 +3381,11 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 7476470002500363229}
+    - target: {fileID: 5300853751578882632, guid: a14d44fbdf2fcaa4081c11284aa6348d,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: StartGameButtonPressed
+      objectReference: {fileID: 0}
     - target: {fileID: 6532331601860387788, guid: a14d44fbdf2fcaa4081c11284aa6348d,
         type: 3}
       propertyPath: m_text
@@ -3786,16 +3791,6 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 7476470002500363229}
-    - target: {fileID: 5300853751578882632, guid: a14d44fbdf2fcaa4081c11284aa6348d,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: NextLevelButtonPressed
-      objectReference: {fileID: 0}
-    - target: {fileID: 6532331601860387788, guid: a14d44fbdf2fcaa4081c11284aa6348d,
-        type: 3}
-      propertyPath: m_text
-      value: NEXT LEVEL
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a14d44fbdf2fcaa4081c11284aa6348d, type: 3}
 --- !u!224 &811212072085006440 stripped

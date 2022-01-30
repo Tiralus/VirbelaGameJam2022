@@ -61,11 +61,13 @@ public class GameUI : MonoBehaviour
         corruptionMeter.maxValue = 1;
 
         ThreeDeeTiles.UpdateTiles += UpdateWinMeter;
+        GameManager.IsEndGame += ShowEndGameMenu;
     }
 
     private void OnDestroy()
     {
         ThreeDeeTiles.UpdateTiles -= UpdateWinMeter;
+        GameManager.IsEndGame -= ShowEndGameMenu;
     }
 
     private void UpdateWaterMeter(float value)

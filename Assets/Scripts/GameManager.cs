@@ -8,7 +8,6 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
 
-    public GameUI gameUI;
     [Tooltip("Percentage of grass tiles present for player to win")]
     public float playerPerc = 0.5f;
     [Tooltip("Percentage of corruption tiles present for enemy to win")]
@@ -20,6 +19,8 @@ public class GameManager : MonoBehaviour
 
     public List<GameObject> Levels;
     public int levelIndex = 0;
+
+    public static Action<bool> IsEndGame;
 
     private void Awake()
     {
@@ -51,9 +52,6 @@ public class GameManager : MonoBehaviour
     {
         Scene scene = SceneManager.GetActiveScene();
         SceneManager.LoadScene(scene.name);
-
-        if (gameUI == null)
-            gameUI = FindObjectOfType<GameUI>();
 
         StartLevel(levelIndex);
     }
@@ -95,7 +93,8 @@ public class GameManager : MonoBehaviour
         if (!InPlay) return;
 
         InPlay = false;
-        gameUI.ShowEndGameMenu(win);
+
+        IsEndGame?.Invoke(win);
     }
 
     public void PauseGame(bool pause)
