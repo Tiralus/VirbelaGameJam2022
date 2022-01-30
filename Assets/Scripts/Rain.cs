@@ -56,6 +56,15 @@ public class Rain : MonoBehaviour
     {
         _rainOn = CanRain() && enable;
         _rainEmmission.enabled = _rainOn;
+
+        if (_rainOn)
+        {
+            AudioManager.instance.PlaySound("Rain");
+        }
+        else
+        {
+            AudioManager.instance.StopSound("Rain");
+        }
     }
 
     public void UpdateRainParticles(Vector3 direction)
