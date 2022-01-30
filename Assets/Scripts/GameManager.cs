@@ -34,12 +34,12 @@ public class GameManager : MonoBehaviour
         }
 
         DontDestroyOnLoad(gameObject);
-
-        StartLevel(levelIndex);
     }
 
     private void Start()
     {
+        StartLevel(levelIndex);
+
         ThreeDeeTiles.UpdateTiles += CheckEndGame;
     }
 
@@ -68,6 +68,8 @@ public class GameManager : MonoBehaviour
 
     public void StartLevel(int index)
     {
+        Debug.Log("Start Level: " + index);
+
         InPlay = false;
         PauseGame(false);
         Instantiate(Levels[levelIndex]);
