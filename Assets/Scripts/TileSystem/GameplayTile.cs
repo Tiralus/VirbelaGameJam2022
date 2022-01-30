@@ -52,9 +52,11 @@ public class GameplayTile : BaseTile
     private float _fireTickCooldown;
     private float _healingTickCooldown;
 
-    private const int _corruptionState = 0;
-    private const int _neutralState = 1;
-    private const int _grassState = 2;
+    public const int corruptionState = 0;
+    public const int neutralState = 1;
+    public const int grassState = 2;
+
+    public System.Action OnStateChanged;
 
     private const float _neighborDistance = 10f;
     private readonly float[] _neighborAngles =
@@ -88,13 +90,13 @@ public class GameplayTile : BaseTile
 
         switch (CurrentState)
         {
-            case _grassState:
+            case grassState:
                 SpreadGrass();
                 SpreadFire();
                 CheckHealing(Selected && Rain.Instance.IsRaining(), Rain.Instance.WaterHealAmount);
                 CheckHealth();
                 break;
-            case _corruptionState:
+            case corruptionState:
                 SpreadCorruption();
                 SpreadFire();
                 CheckHealth();
@@ -266,7 +268,7 @@ public class GameplayTile : BaseTile
     {
         if (_health <= 0f)
         {
-            ChangeStateByIdx(_neutralState);
+            ChangeStateByIdx(neutralState);
         }
     }
 
@@ -323,6 +325,7 @@ public class GameplayTile : BaseTile
         
         Fire.Clear();
         Smoke.Clear();
+        if (OnStateChanged != null) OnStateChanged();
     }
 
     public void FindNeighbors()
@@ -366,7 +369,7 @@ public class GameplayTile : BaseTile
                 continue;
             }
 
-            if (randomNeighbor.CurrentState == _neutralState)
+            if (randomNeighbor.CurrentState == neutralState)
             {
                 randomNeighbor.ChangeStateByIdx(CurrentState);
             }

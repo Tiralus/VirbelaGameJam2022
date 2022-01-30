@@ -19,6 +19,11 @@ public class ThreeDeeTiles : MonoBehaviour
     private Tilemap _TilemapRef;
     private List<GameplayTile> _gameplayTiles = new List<GameplayTile>();
 
+    public System.Action<float, float> UpdateTiles;
+
+    public float GrassPercentage;
+    public float CorruptionPercentage;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -63,6 +68,7 @@ public class ThreeDeeTiles : MonoBehaviour
                                 GameplayTile newTile = newObject.GetComponent<GameplayTile>();
                                 if (newTile != null)
                                 {
+                                    newTile.OnStateChanged += UpdatePercentages;
                                     _gameplayTiles.Add(newTile);
                                     newTile.ChangeStateByIdx(bridge.InitialState);
                                 }
@@ -77,5 +83,27 @@ public class ThreeDeeTiles : MonoBehaviour
         {
             gameplayTile.FindNeighbors();
         }
+    }
+
+    private void UpdatePercentages()
+    {
+        float totalGameTiles = _gameplayTiles.Count;
+        int grassTiles = 0;
+        int corruptionTiles = 0;
+
+        foreach (GameplayTile tile in _gameplayTiles)
+        {
+            switch (tile.CurrentState)
+            {
+                case GameplayTile.corruptionState:
+                    ++corruptionTiles;
+                    break;
+                case GameplayTile.grassState:
+                    ++grassTiles;
+                    break;
+            }
+        }
+
+        if (UpdateTiles != null) UpdateTiles(grassTiles/totalGameTiles, corruptionTiles/totalGameTiles);
     }
 }
