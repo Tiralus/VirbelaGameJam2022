@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -15,6 +16,12 @@ public class GameUI : MonoBehaviour
     public Slider waterMeter;
     public Image fill;
     public float lowFillPerc = 0.25f;
+
+    [Header("Elements")]
+    public TextMeshProUGUI winLabel;
+
+    private string winText = "YOU WON!";
+    private string loseText = "GAME OVER";
 
     private Cloud cloud;
 
@@ -61,7 +68,7 @@ public class GameUI : MonoBehaviour
         AudioManager.instance.StopMusic("Drizzle");
         AudioManager.instance.PlayMusic("Thunderstorm");
 
-        // TODO: call to start game
+        GameManager.Instance.StartGame();
     }
 
     public void PauseButtonPressed()
@@ -69,7 +76,7 @@ public class GameUI : MonoBehaviour
         pauseMenu.SetActive(true);
         gameHUD.SetActive(false);
 
-        // TODO: Pause game
+        GameManager.Instance.PauseGame(true);
     }
 
     public void ResumeButtonPressed()
@@ -77,7 +84,7 @@ public class GameUI : MonoBehaviour
         pauseMenu.SetActive(false);
         gameHUD.SetActive(true);
 
-        // TODO: Unpause game
+        GameManager.Instance.PauseGame(false);
     }
 
     public void RestartButtonPressed()
@@ -87,12 +94,14 @@ public class GameUI : MonoBehaviour
         pauseMenu.SetActive(false);
         endGameMenu.SetActive(false);
 
-        // TODO: Reset game
+        GameManager.Instance.ResetGame();
     }
 
-    public void ShowEndGameMenu()
+    public void ShowEndGameMenu(bool win)
     {
         gameHUD.SetActive(false);
         endGameMenu.SetActive(true);
+
+        winLabel.text = win ? winText : loseText;
     }
 }

@@ -38,6 +38,8 @@ public class Rain : MonoBehaviour
 
     private void Update()
     {
+        if (GameManager.Instance.IsPaused()) return;
+
         if (!CanRain() && IsRaining())
             EnableRain(false);
 
