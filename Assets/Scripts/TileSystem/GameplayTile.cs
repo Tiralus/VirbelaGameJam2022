@@ -39,9 +39,11 @@ public class GameplayTile : BaseTile
     private ParticleSystem.EmissionModule _evilEmission;
     private ParticleSystem.EmissionModule _fireEmission;
 
-    private const int _corruptionState = 0;
-    private const int _neutralState = 1;
-    private const int _grassState = 2;
+    public const int corruptionState = 0;
+    public const int neutralState = 1;
+    public const int grassState = 2;
+
+    public System.Action OnStateChanged;
 
     private const float _neighborDistance = 10f;
     private readonly float[] _neighborAngles =
@@ -73,10 +75,10 @@ public class GameplayTile : BaseTile
 
         switch (CurrentState)
         {
-            case _grassState:
+            case grassState:
                 SpreadGrass();
                 break;
-            case _corruptionState:
+            case corruptionState:
                 SpreadCorruption();
                 break;
         }
@@ -221,6 +223,8 @@ public class GameplayTile : BaseTile
         _spreadCooldown = 0f;
         _waterSaturation = 0f;
         _corruptionSpreadChance = 0f;
+
+        if (OnStateChanged != null) OnStateChanged();
     }
 
     public void FindNeighbors()
@@ -259,7 +263,7 @@ public class GameplayTile : BaseTile
             randomNeighbors.RemoveAt(randomIndex);
 
             if (randomNeighbor == null ||
-                randomNeighbor.CurrentState != _neutralState)
+                randomNeighbor.CurrentState != neutralState)
             {
                 continue;
             }
