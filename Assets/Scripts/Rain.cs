@@ -17,7 +17,6 @@ public class Rain : MonoBehaviour
 
     private bool _rainOn = false;
     private float _waterCurrentAmount;
-    private bool _isOverWaterResource = false;
 
     private ParticleSystem.ForceOverLifetimeModule _rainForce;
     private ParticleSystem.EmissionModule _rainEmmission;
@@ -26,6 +25,8 @@ public class Rain : MonoBehaviour
 
     public bool CanRain() => _waterCurrentAmount > 0;
     public bool IsRaining() => _rainOn;
+
+    public bool isOverWaterSource = false;
 
     private void Awake()
     {
@@ -40,8 +41,8 @@ public class Rain : MonoBehaviour
         if (!CanRain() && IsRaining())
             EnableRain(false);
 
-        UseWaterResource();
-        RefillWaterResource();
+        UseWater();
+        RefillWater();
     }
 
     public void EnableRain(bool enable)
@@ -67,7 +68,7 @@ public class Rain : MonoBehaviour
         _rainEmmission.rateOverTime = rainRate;
     }
 
-    public void UseWaterResource()
+    public void UseWater()
     {
         if (!IsRaining()) return;
 
@@ -77,18 +78,13 @@ public class Rain : MonoBehaviour
         UpdateWaterResource?.Invoke(_waterCurrentAmount);
     }
 
-    public void RefillWaterResource()
+    public void RefillWater()
     {
-        if (!IsOverWaterResource()) return;
+        if (!isOverWaterSource) return;
 
         _waterCurrentAmount += waterRefillRate * Time.deltaTime;
         _waterCurrentAmount = Mathf.Clamp(_waterCurrentAmount, 0, waterCapacity);
 
         UpdateWaterResource?.Invoke(_waterCurrentAmount);
-    }
-
-    public bool IsOverWaterResource()
-    {
-        return _isOverWaterResource;
     }
 }
