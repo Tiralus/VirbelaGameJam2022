@@ -4946,5 +4946,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Selection: {fileID: 2153483904973679347}
   SelectionOscillationSpeed: 2
-  EndingHeightChange: 0.25
+  EndingHeightChange: 0.5
   CloudCollecting: {fileID: 48042995300334786}

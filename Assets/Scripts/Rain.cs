@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class Rain : MonoBehaviour
 {
+    public static Rain Instance;
+    
     [Header("Rain")]
     public ParticleSystem rainParticle;
     public float rainDirectionMagnitude;
@@ -30,6 +32,8 @@ public class Rain : MonoBehaviour
 
     private void Awake()
     {
+        Instance = this;
+        
         _rainForce = rainParticle.forceOverLifetime;
         _rainEmmission = rainParticle.emission;
 
