@@ -16,12 +16,15 @@ public class GameUI : MonoBehaviour
 
     [Header("Water Meter")]
     public Slider waterMeter;
-    public Image fill;
+    public Image waterFill;
     public float lowFillPerc = 0.25f;
 
     [Header("Win Meter")]
     public Slider grassMeter;
     public Slider corruptionMeter;
+
+    [Header("Lightning Meter")]
+    public Slider lightningMeter;
 
     [Header("Elements")]
     public TextMeshProUGUI winLabel;
@@ -29,14 +32,14 @@ public class GameUI : MonoBehaviour
     private string winText = "YOU WON!";
     private string loseText = "GAME OVER";
 
-    private Cloud cloud;
-
-    private Color fillColor;
+    private Color waterFillColor;
     private Color lowFillColor = Color.red;
+
+    private Cloud cloud;
 
     private void Awake()
     {
-        fillColor = fill.color;
+        waterFillColor = waterFill.color;
 
         cloud = FindObjectOfType<Cloud>();
         if (cloud)
@@ -46,6 +49,7 @@ public class GameUI : MonoBehaviour
             UpdateWaterMeter(waterMeter.maxValue);
         }
 
+
         AudioManager.instance.PlayMusic("Drizzle");
         mainMenu.SetActive(true);
 
@@ -53,7 +57,7 @@ public class GameUI : MonoBehaviour
         pauseMenu.SetActive(false);
         endGameMenu.SetActive(false);
         creditsPanel.SetActive(false);
-
+        
         grassMeter.maxValue = 1;
         corruptionMeter.maxValue = 1;
 
@@ -70,15 +74,21 @@ public class GameUI : MonoBehaviour
         waterMeter.value = Mathf.Clamp(value, 0, waterMeter.maxValue);
 
         if (waterMeter.value <= waterMeter.maxValue * lowFillPerc)
-            fill.color = lowFillColor;
+            waterFill.color = lowFillColor;
         else
-            fill.color = fillColor;
+            waterFill.color = waterFillColor;
     }
 
     private void UpdateWinMeter(float grassPerc, float corruptionPerc)
     {
         grassMeter.value = grassPerc;
         corruptionMeter.value = corruptionPerc;
+    }
+
+    private void UpdateLightningMeter(float value, float maxValue)
+    {
+        lightningMeter.maxValue = maxValue;
+        lightningMeter.value = Mathf.Clamp(value, 0, lightningMeter.maxValue);
     }
 
     public void StartGameButtonPressed()

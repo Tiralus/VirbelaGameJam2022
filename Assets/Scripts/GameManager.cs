@@ -59,8 +59,9 @@ public class GameManager : MonoBehaviour
 
     public void EndGame(bool win)
     {
-        inPlay = false;
+        if (!InPlay()) return;
 
+        inPlay = false;
         gameUI.ShowEndGameMenu(win);
     }
 

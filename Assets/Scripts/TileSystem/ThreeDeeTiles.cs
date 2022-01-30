@@ -1,5 +1,3 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -15,14 +13,16 @@ public class ThreeDeeTiles : MonoBehaviour
         public int InitialState;
     };
 
+    public static ThreeDeeTiles Instance;
     public Vector3 Min, Max;
 
     public List<TilePairBridge> Tiles;
 
     private Tilemap _TilemapRef;
     private List<GameplayTile> _gameplayTiles = new List<GameplayTile>();
+    private List<BaseTile> _baseTiles = new List<BaseTile>();
 
-    public static Action<float, float> UpdateTiles;
+    public static System.Action<float, float> UpdateTiles;
 
     public float GrassPercentage;
     public float CorruptionPercentage;
@@ -30,6 +30,8 @@ public class ThreeDeeTiles : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        Instance = this;
+        
         _TilemapRef = GetComponent<Tilemap>();
 
         InstantiatePrefabsFromTilemap();
@@ -71,12 +73,18 @@ public class ThreeDeeTiles : MonoBehaviour
                             if (bridge.From.name.Equals(tile.name))
                             {
                                 GameObject newObject = Instantiate(bridge.To, localPos, Quaternion.identity, transform);
-                                GameplayTile newTile = newObject.GetComponent<GameplayTile>();
-                                if (newTile != null)
+                                BaseTile baseTile = newObject.GetComponent<BaseTile>();
+
+                                if (baseTile != null)
                                 {
-                                    newTile.OnStateChanged += UpdatePercentages;
-                                    _gameplayTiles.Add(newTile);
-                                    newTile.ChangeStateByIdx(bridge.InitialState);
+                                    _baseTiles.Add(baseTile);
+                                    
+                                    if (baseTile is GameplayTile newTile)
+                                    {
+                                        newTile.OnStateChanged += UpdatePercentages;
+                                        _gameplayTiles.Add(newTile);
+                                        newTile.ChangeStateByIdx(bridge.InitialState);
+                                    }
                                 }
                             }
                         }
@@ -115,6 +123,17 @@ public class ThreeDeeTiles : MonoBehaviour
         UpdateTiles?.Invoke(grassTiles/totalGameTiles, corruptionTiles/totalGameTiles);
     }
 
+    public BaseTile GetRandomTile()
+    {
+        if (_baseTiles == null ||
+            _baseTiles.Count <= 0)
+        {
+            return null;
+        }
+
+        return _baseTiles[Random.Range(0, _baseTiles.Count)];
+    }
+    
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;
