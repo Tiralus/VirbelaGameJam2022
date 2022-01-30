@@ -11,11 +11,17 @@ public class GameUI : MonoBehaviour
     public GameObject gameHUD;
     public GameObject pauseMenu;
     public GameObject endGameMenu;
+    [Space]
+    public GameObject creditsPanel;
 
     [Header("Water Meter")]
     public Slider waterMeter;
     public Image fill;
     public float lowFillPerc = 0.25f;
+
+    [Header("Win Meter")]
+    public Slider grassMeter;
+    public Slider corruptionMeter;
 
     [Header("Elements")]
     public TextMeshProUGUI winLabel;
@@ -30,11 +36,8 @@ public class GameUI : MonoBehaviour
 
     private void Awake()
     {
-        fillColor = fill.color;  
-    }
+        fillColor = fill.color;
 
-    private void Start()
-    {
         cloud = FindObjectOfType<Cloud>();
         if (cloud)
         {
@@ -42,13 +45,24 @@ public class GameUI : MonoBehaviour
             waterMeter.maxValue = cloud.rain.waterCapacity;
             UpdateWaterMeter(waterMeter.maxValue);
         }
-        
+
         AudioManager.instance.PlayMusic("Drizzle");
         mainMenu.SetActive(true);
-        
+
         gameHUD.SetActive(false);
         pauseMenu.SetActive(false);
         endGameMenu.SetActive(false);
+        creditsPanel.SetActive(false);
+
+        grassMeter.maxValue = 1;
+        corruptionMeter.maxValue = 1;
+
+        ThreeDeeTiles.UpdateTiles += UpdateWinMeter;
+    }
+
+    private void OnDestroy()
+    {
+        ThreeDeeTiles.UpdateTiles -= UpdateWinMeter;
     }
 
     private void UpdateWaterMeter(float value)
@@ -61,14 +75,31 @@ public class GameUI : MonoBehaviour
             fill.color = fillColor;
     }
 
+    private void UpdateWinMeter(float grassPerc, float corruptionPerc)
+    {
+        grassMeter.value = grassPerc;
+        corruptionMeter.value = corruptionPerc;
+    }
+
     public void StartGameButtonPressed()
     {
         mainMenu.SetActive(false);
+        creditsPanel.SetActive(false);
         gameHUD.SetActive(true);
         AudioManager.instance.StopMusic("Drizzle");
         AudioManager.instance.PlayMusic("Thunderstorm");
 
         GameManager.Instance.StartGame();
+    }
+
+    public void ShowCreditsPanel()
+    {
+        creditsPanel.SetActive(true);
+    }
+
+    public void CloseCreditsPanel()
+    {
+        creditsPanel.SetActive(false);
     }
 
     public void PauseButtonPressed()
