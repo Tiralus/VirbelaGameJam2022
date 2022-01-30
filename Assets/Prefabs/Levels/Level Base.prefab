@@ -20823,9 +20823,6 @@ MonoBehaviour:
   - From: {fileID: 11400000, guid: 0ef1eb052fe31b44d8f8a431f314aac2, type: 2}
     To: {fileID: 4939042882145864646, guid: edb906fcee83aa5498a129cd5e3ac1ae, type: 3}
     InitialState: 3
-  - From: {fileID: 11400000, guid: 0ef1eb052fe31b44d8f8a431f314aac2, type: 2}
-    To: {fileID: 4939042882145864646, guid: edb906fcee83aa5498a129cd5e3ac1ae, type: 3}
-    InitialState: 3
   - From: {fileID: 11400000, guid: b673b05932f6a104ba862b71d4329969, type: 2}
     To: {fileID: 1215666666166447640, guid: c9850936fd2fb11418c3eb56aaa80d20, type: 3}
     InitialState: 0
