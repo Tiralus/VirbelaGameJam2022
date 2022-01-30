@@ -115,6 +115,7 @@ public class ThreeDeeTiles : MonoBehaviour
                     ++corruptionTiles;
                     break;
                 case GameplayTile.grassState:
+                case GameplayTile.treesState:
                     ++grassTiles;
                     break;
             }

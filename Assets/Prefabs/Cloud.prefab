@@ -19671,8 +19671,8 @@ MonoBehaviour:
   lightning: {fileID: 239858928}
   LightningChanceToStartFire: 0.25
   LightningDamage: 10
-  LightingCapacity: 50
-  LightingUseRate: 5
+  LightningCapacity: 50
+  LightningUseRate: 5
   Left: 1401000061000000
   Right: 1301000064000000
   Forward: 1101000077000000
