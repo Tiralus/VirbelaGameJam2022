@@ -38,6 +38,7 @@ public class AudioManager : MonoBehaviour
         for (int i = 0; i < music.Length; i++)
         {
             GameObject audioObject = new GameObject("Music_" + i + "_" + music[i].audioName);
+            audioObject.transform.SetParent(this.transform);
             audioObject.AddComponent<AudioSource>();
             audioObject.GetComponent<AudioSource>().outputAudioMixerGroup = mixer.FindMatchingGroups("Music")[0];
             audioObject.GetComponent<AudioSource>().loop = music[i].audioLoop;
@@ -49,6 +50,7 @@ public class AudioManager : MonoBehaviour
         for (int i = 0; i < soundEffects.Length; i++)
         {
             GameObject audioObject = new GameObject("Effects_" + i + "_" + soundEffects[i].audioName);
+            audioObject.transform.SetParent(this.transform);
             audioObject.AddComponent<AudioSource>();
             audioObject.GetComponent<AudioSource>().outputAudioMixerGroup = mixer.FindMatchingGroups("SFX")[0];
             audioObject.GetComponent<AudioSource>().loop = soundEffects[i].audioLoop;
