@@ -4,6 +4,20 @@ using UnityEngine;
 
 public class Cloud : MonoBehaviour
 {
+    public enum KeyType
+    {
+        Down,
+        Pressed,
+        Released
+    }
+    
+    [Serializable]
+    public class InputKey
+    {
+        public KeyCode Key;
+        public KeyType Type;
+    }
+    
     public static Cloud Instance;
     
     [Header("Movement")]
@@ -23,16 +37,18 @@ public class Cloud : MonoBehaviour
     public float LightningUseRate;
     
     [Header("Input")]
-    public List<KeyCode> Left;
-    public List<KeyCode> Right;
-    public List<KeyCode> Forward;
-    public List<KeyCode> Backward;
-    public List<KeyCode> Up;
-    public List<KeyCode> Down;
+    public List<InputKey> Left;
+    public List<InputKey> Right;
+    public List<InputKey> Forward;
+    public List<InputKey> Backward;
+    public List<InputKey> Up;
+    public List<InputKey> Down;
 
-    public List<KeyCode> speedKey;
-    public List<KeyCode> rainKey;
-    public List<KeyCode> lightningKey;
+    public List<InputKey> speedKey;
+    public List<InputKey> rainKey;
+    public List<InputKey> rainOn;
+    public List<InputKey> rainOff;
+    public List<InputKey> lightningKey;
 
     public Rain rain;
     public PowerupSpawner PowerupSpawner;
@@ -69,7 +85,7 @@ public class Cloud : MonoBehaviour
         }
         else
         {
-            bool isFastSpeed = IsKeyDown(speedKey);
+            bool isFastSpeed = CheckKey(speedKey);
             float targetSpeed = 0.0f;
             if (isFastSpeed && rain.CanRain())
             {
@@ -90,10 +106,16 @@ public class Cloud : MonoBehaviour
         rain.UpdateRainParticles(_CurrentDirection * (_CurrentSpeed / FastSpeed));
         PowerupSpawner.CheckSpawn();
 
-        if (IsKeyPressed(rainKey))
+        if (CheckKey(rainKey))
             rain.EnableRain(!rain.IsRaining());
+        
+        if (CheckKey(rainOn))
+            rain.EnableRain(true);
+        
+        if (CheckKey(rainOff))
+            rain.EnableRain(false);
 
-        if (IsKeyPressed(lightningKey))
+        if (CheckKey(lightningKey))
             ActivateLightning();
 
         BaseTile previousSelectedTile = _selectedTile;
@@ -173,32 +195,32 @@ public class Cloud : MonoBehaviour
     {
         Vector3 direction = Vector2.zero;
 
-        if (IsKeyDown(Left))
+        if (CheckKey(Left))
         {
             direction.x -= 1;
         }
         
-        if (IsKeyDown(Right))
+        if (CheckKey(Right))
         {
             direction.x += 1;
         }
         
-        if (IsKeyDown(Backward))
+        if (CheckKey(Backward))
         {
             direction.z -= 1;
         }
         
-        if (IsKeyDown(Forward))
+        if (CheckKey(Forward))
         {
             direction.z += 1;
         }
         
-        if (IsKeyDown(Down))
+        if (CheckKey(Down))
         {
             direction.y -= 1;
         }
         
-        if (IsKeyDown(Up))
+        if (CheckKey(Up))
         {
             direction.y += 1;
         }
@@ -206,30 +228,34 @@ public class Cloud : MonoBehaviour
         return direction;
     }
 
-    public bool IsKeyDown(List<KeyCode> key)
+    public bool CheckKey(List<InputKey> inputKeys)
     {
-        foreach (KeyCode keyCode in key)
+        foreach (InputKey inputKey in inputKeys)
         {
-            if (Input.GetKey(keyCode))
+            switch (inputKey.Type)
             {
-                return true;
+                case KeyType.Down:
+                    if (Input.GetKey(inputKey.Key))
+                    {
+                        return true;
+                    }
+                    break;
+                case KeyType.Pressed:
+                    if (Input.GetKeyDown(inputKey.Key))
+                    {
+                        return true;
+                    }
+                    break;
+                case KeyType.Released:
+                    if (Input.GetKeyUp(inputKey.Key))
+                    {
+                        return true;
+                    }
+                    break;
             }
         }
 
         return false;
-    }
-
-    public bool IsKeyPressed(List<KeyCode> key)
-    {
-        foreach (KeyCode keyCode in key)
-        {
-            if (Input.GetKeyDown(keyCode))
-            {
-                return true;
-            }
-        }
-
-         return false;
     }
 
     private void OnDrawGizmosSelected()

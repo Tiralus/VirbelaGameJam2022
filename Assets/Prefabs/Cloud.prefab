@@ -4875,6 +4875,7 @@ GameObject:
   - component: {fileID: 657590428}
   - component: {fileID: 657590427}
   - component: {fileID: 933633418}
+  - component: {fileID: 798348104}
   m_Layer: 0
   m_Name: Camera
   m_TagString: MainCamera
@@ -4889,7 +4890,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 657590426}
-  m_LocalRotation: {x: 0.2588191, y: 0, z: 0, w: 0.9659258}
+  m_LocalRotation: {x: 0.2429839, y: 0.005181521, z: -0.0012979507, w: 0.9700157}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -4996,6 +4997,40 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 4294967295
   m_MaxRayIntersections: 0
+--- !u!114 &798348104
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 657590426}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72ece51f2901e7445ab60da3685d6b5f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ShowDebugText: 0
+  m_ShowCameraFrustum: 1
+  m_IgnoreTimeScale: 0
+  m_WorldUpOverride: {fileID: 0}
+  m_UpdateMethod: 2
+  m_BlendUpdateMethod: 1
+  m_DefaultBlend:
+    m_Style: 1
+    m_Time: 2
+    m_CustomCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+  m_CustomBlends: {fileID: 0}
+  m_CameraCutEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_CameraActivatedEvent:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &664097613
 GameObject:
   m_ObjectHideFlags: 0
@@ -19673,15 +19708,53 @@ MonoBehaviour:
   LightningDamage: 10
   LightningCapacity: 50
   LightningUseRate: 5
-  Left: 1401000061000000
-  Right: 1301000064000000
-  Forward: 1101000077000000
-  Backward: 1201000073000000
-  Up: 
-  Down: 
-  speedKey: 300100002f010000
-  rainKey: 31000000
-  lightningKey: 32000000
+  Left:
+  - Key: 276
+    Type: 0
+  - Key: 97
+    Type: 0
+  Right:
+  - Key: 275
+    Type: 0
+  - Key: 100
+    Type: 0
+  Forward:
+  - Key: 273
+    Type: 0
+  - Key: 119
+    Type: 0
+  Backward:
+  - Key: 274
+    Type: 0
+  - Key: 115
+    Type: 0
+  Up: []
+  Down: []
+  speedKey:
+  - Key: 304
+    Type: 0
+  - Key: 303
+    Type: 0
+  rainKey:
+  - Key: 49
+    Type: 1
+  - Key: 306
+    Type: 1
+  - Key: 305
+    Type: 1
+  rainOn:
+  - Key: 323
+    Type: 1
+  rainOff:
+  - Key: 323
+    Type: 2
+  lightningKey:
+  - Key: 50
+    Type: 1
+  - Key: 324
+    Type: 1
+  - Key: 32
+    Type: 1
   rain: {fileID: 2820381174761278975}
   PowerupSpawner: {fileID: 6078539993991397750}
   Collider: {fileID: 4352878829933485943}
