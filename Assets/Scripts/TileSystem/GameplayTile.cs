@@ -55,6 +55,7 @@ public class GameplayTile : BaseTile
     public const int corruptionState = 0;
     public const int neutralState = 1;
     public const int grassState = 2;
+    public const int treesState = 3;
 
     public System.Action OnStateChanged;
 
