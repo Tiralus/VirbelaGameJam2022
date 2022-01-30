@@ -31,6 +31,7 @@ public class GameManager : MonoBehaviour
         else
         {
             Destroy(gameObject);
+            return;
         }
 
         DontDestroyOnLoad(gameObject);
@@ -38,6 +39,8 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+
         StartLevel(levelIndex);
 
         ThreeDeeTiles.UpdateTiles += CheckEndGame;
@@ -48,12 +51,15 @@ public class GameManager : MonoBehaviour
         ThreeDeeTiles.UpdateTiles -= CheckEndGame;
     }
 
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        StartLevel(levelIndex);
+    }
+
     public void ReloadLevel()
     {
         Scene scene = SceneManager.GetActiveScene();
         SceneManager.LoadScene(scene.name);
-
-        StartLevel(levelIndex);
     }
 
     public void LoadNextLevel()
