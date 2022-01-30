@@ -4,15 +4,19 @@ using UnityEngine;
 
 public class Cloud : MonoBehaviour
 {
+    public static Cloud Instance;
+    
     [Header("Movement")]
     public float Speed;
     public Vector3 Min;
     public Vector3 Max;
     public LayerMask GroundLayer;
     public Transform CameraTransform;
-
+    
     [Header("Lightning")]
     public ParticleSystem lightning;
+    public float LightningChanceToStartFire;
+    public int LightningDamage;
     
     [Header("Input")]
     public List<KeyCode> Left;
@@ -30,10 +34,13 @@ public class Cloud : MonoBehaviour
     public Transform DropShadow;
 
     private BaseTile _selectedTile;
+    
+    public bool IsLightning { get; private set; }
 
     private void Start()
     {
         rain = GetComponent<Rain>();
+        Instance = this;
     }
 
     private void Update()
@@ -82,6 +89,11 @@ public class Cloud : MonoBehaviour
         }
 
         rain.isOverWaterSource = _selectedTile != null && _selectedTile is WaterTile;
+    }
+
+    private void LateUpdate()
+    {
+        IsLightning = false;
     }
 
     private Vector3 ClampPosition(Vector3 position)
@@ -194,5 +206,6 @@ public class Cloud : MonoBehaviour
     {
         AudioManager.instance.PlaySound("Thunder");
         lightning.Play();
+        IsLightning = true;
     }
 }

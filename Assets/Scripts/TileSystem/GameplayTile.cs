@@ -5,27 +5,35 @@ public class GameplayTile : BaseTile
 {
     [Header("Grass")]
     public float MaxWaterSaturation;
-    public float WaterSaturationRate;
     public float WaterDesaturationRate;
     public float GrassSpreadWaterSaturationThreshold;
     public float GrassSpreadChance;
     public float GrassSpreadCooldown;
     public ParticleSystem Foliage;
     public float FoliageMaxRate;
-    
+
     [Header("Corruption")]
     public float CorruptionSpreadChanceRate;
     public float CorruptionSpreadCooldown;
     public ParticleSystem Evil;
     public float EvilMaxRate;
+    public int CorruptionDamage;
 
     [Header("Fire")]
-    public float FireSpreadChanceRate;
     public float FireSpreadCooldown;
     public ParticleSystem Fire;
     public float FireMaxRate;
+    public float FireSpreadChanceReductionRate;
+    public float FireSpreadChanceAddition;
+    public float FireSpreadChanceStart;
+    public float FireTickCooldown;
+    public int FireTickDamage;
 
     [Header("General")]
+    public int MaxHealth;
+    public float HealingCooldown;
+    public ParticleSystem Smoke;
+    public float SmokeMaxRate;
     public Collider Collider;
     public int CurrentState = 0;
     public GameObject[] StateObjects;
@@ -35,9 +43,14 @@ public class GameplayTile : BaseTile
     private float _spreadCooldown;
     private float _corruptionSpreadChance;
     private float _fireSpreadChance;
+    private float _fireSpreadCooldown;
     private ParticleSystem.EmissionModule _foliageEmission;
     private ParticleSystem.EmissionModule _evilEmission;
     private ParticleSystem.EmissionModule _fireEmission;
+    private ParticleSystem.EmissionModule _smokeEmission;
+    private int _health;
+    private float _fireTickCooldown;
+    private float _healingTickCooldown;
 
     private const int _corruptionState = 0;
     private const int _neutralState = 1;
@@ -65,6 +78,8 @@ public class GameplayTile : BaseTile
 
         _foliageEmission = Foliage.emission;
         _evilEmission = Evil.emission;
+        _fireEmission = Fire.emission;
+        _smokeEmission = Smoke.emission;
     }
 
     protected override void Update()
@@ -75,9 +90,14 @@ public class GameplayTile : BaseTile
         {
             case _grassState:
                 SpreadGrass();
+                SpreadFire();
+                CheckHealing(Selected && Rain.Instance.IsRaining(), Rain.Instance.WaterHealAmount);
+                CheckHealth();
                 break;
             case _corruptionState:
                 SpreadCorruption();
+                SpreadFire();
+                CheckHealth();
                 break;
         }
     }
@@ -89,7 +109,7 @@ public class GameplayTile : BaseTile
         {
             if (_waterSaturation < MaxWaterSaturation)
             {
-                _waterSaturation += WaterSaturationRate * Time.deltaTime;
+                _waterSaturation += Rain.Instance.WaterSaturationRate * Time.deltaTime;
 
                 if (_waterSaturation > MaxWaterSaturation)
                 {
@@ -154,7 +174,7 @@ public class GameplayTile : BaseTile
         {
             _corruptionSpreadChance = 0f;
             
-            GameplayTile neighbor = SpreadToNeighbor();
+            GameplayTile neighbor = SpreadToNeighbor(CorruptionDamage);
             
             if (neighbor != null)
             {
@@ -172,39 +192,102 @@ public class GameplayTile : BaseTile
         }
     }
 
-    public void SpreadFire()
+    private void SpreadFire()
     {
-        ParticleSystem.MinMaxCurve fireRate = _fireEmission.rateOverTime;
-        fireRate.constant = EvilMaxRate * _fireSpreadChance;
-        _fireEmission.rateOverTime = fireRate;
-
-        if (_spreadCooldown > 0f)
+        if (Selected &&
+            Cloud.Instance.IsLightning)
         {
-            _spreadCooldown -= Time.deltaTime;
-            return;
-        }
-
-        _spreadCooldown = FireSpreadCooldown;
-
-        if (Random.value <= _fireSpreadChance)
-        {
-            _fireSpreadChance = 0f;
-
-            GameplayTile neighbor = SpreadToNeighbor();
-
-            if (neighbor != null)
+            if (Random.value <= Cloud.Instance.LightningChanceToStartFire)
             {
-                neighbor._spreadCooldown = FireSpreadCooldown;
+                if (_fireSpreadChance > 0f)
+                {
+                    _fireSpreadChance = FireSpreadChanceAddition;
+                }
+                else
+                {
+                    _fireSpreadChance = FireSpreadChanceStart;
+                }
             }
 
+            _health -= Cloud.Instance.LightningDamage;
+        }
+
+        ParticleSystem.MinMaxCurve fireRate = _fireEmission.rateOverTime;
+        fireRate.constant = FireMaxRate * _fireSpreadChance;
+        _fireEmission.rateOverTime = fireRate;
+
+        if (_fireSpreadChance > 0f)
+        {
+            if (_fireTickCooldown <= 0f)
+            {
+                _health -= FireTickDamage;
+                _fireTickCooldown = FireTickCooldown;
+            }
+            else
+            {
+                _fireTickCooldown -= Time.deltaTime;
+            }
+        }
+
+        ParticleSystem.MinMaxCurve smokeRate = _smokeEmission.rateOverTime;
+        float healthRatio = ((float) _health / (float) MaxHealth);
+        smokeRate.constant = SmokeMaxRate * (1 - healthRatio);
+        _smokeEmission.rateOverTime = smokeRate;
+        
+        if (_fireSpreadChance <= 0f)
+        {
             return;
         }
 
-        _fireSpreadChance += FireSpreadChanceRate;
-
-        if (_fireSpreadChance > 1f)
+        if (_fireSpreadCooldown > 0f)
         {
-            _fireSpreadChance = 1;
+            _fireSpreadCooldown -= Time.deltaTime;
+        }
+        else
+        {
+            _fireSpreadCooldown = FireSpreadCooldown;
+        
+            if (Random.value <= _fireSpreadChance)
+            {
+                SpreadFireToNeighbor();
+            }
+        }
+
+        _fireSpreadChance -= FireSpreadChanceReductionRate * Time.deltaTime;
+
+        if (Selected &&
+            Rain.Instance.IsRaining())
+        {
+            _fireSpreadChance -= Rain.Instance.WaterFireSuppressRate * Time.deltaTime;
+        }
+    }
+
+    private void CheckHealth()
+    {
+        if (_health <= 0f)
+        {
+            ChangeStateByIdx(_neutralState);
+        }
+    }
+
+    private void CheckHealing(bool canHeal, int healAmount)
+    {
+        if (_healingTickCooldown > 0f)
+        {
+            _healingTickCooldown -= Time.deltaTime;
+            return;
+        }
+
+        if (canHeal)
+        {
+            _health += healAmount;
+            
+            if (_health > MaxHealth)
+            {
+                _health = MaxHealth;
+            }
+            
+            _healingTickCooldown = HealingCooldown;
         }
     }
 
@@ -221,6 +304,25 @@ public class GameplayTile : BaseTile
         _spreadCooldown = 0f;
         _waterSaturation = 0f;
         _corruptionSpreadChance = 0f;
+        _fireSpreadChance = 0f;
+        _fireSpreadCooldown = 0f;
+        _fireTickCooldown = 0f;
+        _health = MaxHealth;
+        
+        _fireEmission = Fire.emission;
+        _smokeEmission = Smoke.emission;
+        
+        ParticleSystem.MinMaxCurve fireRate = _fireEmission.rateOverTime;
+        fireRate.constant = FireMaxRate * _fireSpreadChance;
+        _fireEmission.rateOverTime = fireRate;
+        
+        ParticleSystem.MinMaxCurve smokeRate = _smokeEmission.rateOverTime;
+        float healthRatio = ((float) _health / (float) MaxHealth);
+        smokeRate.constant = SmokeMaxRate * (1 - healthRatio);
+        _smokeEmission.rateOverTime = smokeRate;
+        
+        Fire.Clear();
+        Smoke.Clear();
     }
 
     public void FindNeighbors()
@@ -248,7 +350,7 @@ public class GameplayTile : BaseTile
         Collider.enabled = true;
     }
 
-    public GameplayTile SpreadToNeighbor()
+    private GameplayTile SpreadToNeighbor(int damage = 0)
     {
         List<GameplayTile> randomNeighbors = new List<GameplayTile>(_neighbors);
 
@@ -258,16 +360,53 @@ public class GameplayTile : BaseTile
             GameplayTile randomNeighbor = randomNeighbors[randomIndex];
             randomNeighbors.RemoveAt(randomIndex);
 
-            if (randomNeighbor == null ||
-                randomNeighbor.CurrentState != _neutralState)
+            if (randomNeighbor == null || 
+                randomNeighbor.CurrentState == CurrentState)
             {
                 continue;
             }
+
+            if (randomNeighbor.CurrentState == _neutralState)
+            {
+                randomNeighbor.ChangeStateByIdx(CurrentState);
+            }
+            else if (damage > 0)
+            {
+                randomNeighbor._health -= damage;
+            }
             
-            randomNeighbor.ChangeStateByIdx(CurrentState);
             return randomNeighbor;
         }
 
         return null;
+    }
+
+    private void SpreadFireToNeighbor()
+    {
+        List<GameplayTile> randomNeighbors = new List<GameplayTile>(_neighbors);
+
+        while (randomNeighbors.Count > 0)
+        {
+            int randomIndex = Random.Range(0, randomNeighbors.Count);
+            GameplayTile randomNeighbor = randomNeighbors[randomIndex];
+            randomNeighbors.RemoveAt(randomIndex);
+
+            if (randomNeighbor == null)
+            {
+                continue;
+            }
+
+            if (randomNeighbor._fireSpreadChance > 0f)
+            {
+                randomNeighbor._fireSpreadChance += FireSpreadChanceAddition;
+            }
+            else
+            {
+                randomNeighbor._fireSpreadChance = FireSpreadChanceStart;
+            }
+
+            randomNeighbor._fireSpreadCooldown = FireSpreadCooldown;
+            break;
+        }
     }
 }

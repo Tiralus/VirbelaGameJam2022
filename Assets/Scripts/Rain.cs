@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Rain : MonoBehaviour
@@ -11,6 +9,9 @@ public class Rain : MonoBehaviour
     public ParticleSystem rainParticle;
     public float rainDirectionMagnitude;
     public float rainPower;
+    public float WaterSaturationRate;
+    public float WaterFireSuppressRate;
+    public int WaterHealAmount;
 
     [Header("Water Resource")]
     public float waterCapacity = 50f;

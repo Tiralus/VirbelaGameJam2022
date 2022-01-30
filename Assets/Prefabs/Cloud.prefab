@@ -4835,7 +4835,7 @@ ParticleSystemRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -2030181861
-  m_SortingLayer: 1
+  m_SortingLayer: 2
   m_SortingOrder: 0
   m_RenderMode: 3
   m_SortMode: 0
@@ -9773,7 +9773,7 @@ ParticleSystemRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1015232279
-  m_SortingLayer: 2
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_RenderMode: 1
   m_SortMode: 0
@@ -9871,7 +9871,7 @@ ParticleSystemRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1565109959
-  m_SortingLayer: 4
+  m_SortingLayer: 5
   m_SortingOrder: 0
   m_RenderMode: 1
   m_SortMode: 4
@@ -19421,7 +19421,7 @@ ParticleSystemRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1757434277
-  m_SortingLayer: 3
+  m_SortingLayer: 4
   m_SortingOrder: 0
   m_RenderMode: 0
   m_SortMode: 4
@@ -19506,6 +19506,8 @@ MonoBehaviour:
     m_Bits: 512
   CameraTransform: {fileID: 8265096498496106486}
   lightning: {fileID: 239858928}
+  LightningChanceToStartFire: 0.25
+  LightningDamage: 10
   Left: 1401000061000000
   Right: 1301000064000000
   Forward: 1101000077000000
@@ -19531,9 +19533,12 @@ MonoBehaviour:
   rainParticle: {fileID: 664097614}
   rainDirectionMagnitude: 5
   rainPower: 100
+  WaterSaturationRate: 0.35
+  WaterFireSuppressRate: 0.2
+  WaterHealAmount: 10
   waterCapacity: 50
   waterUseRate: 1
-  waterRefillRate: 5
+  waterRefillRate: 10
   isOverWaterSource: 0
 --- !u!1 &7301045435844306069
 GameObject:
