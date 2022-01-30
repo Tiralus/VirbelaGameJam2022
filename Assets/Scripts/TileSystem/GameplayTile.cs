@@ -88,6 +88,8 @@ public class GameplayTile : BaseTile
     {
         base.Update();
 
+        if (!GameManager.Instance.InPlay()) return;
+
         switch (CurrentState)
         {
             case grassState:

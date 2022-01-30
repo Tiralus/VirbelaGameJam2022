@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -19,7 +20,7 @@ public class ThreeDeeTiles : MonoBehaviour
     private Tilemap _TilemapRef;
     private List<GameplayTile> _gameplayTiles = new List<GameplayTile>();
 
-    public System.Action<float, float> UpdateTiles;
+    public static Action<float, float> UpdateTiles;
 
     public float GrassPercentage;
     public float CorruptionPercentage;
@@ -37,11 +38,6 @@ public class ThreeDeeTiles : MonoBehaviour
         {
             renderer.enabled = false;
         }
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
     }
 
     void InstantiatePrefabsFromTilemap()
@@ -83,6 +79,8 @@ public class ThreeDeeTiles : MonoBehaviour
         {
             gameplayTile.FindNeighbors();
         }
+
+        UpdatePercentages();
     }
 
     private void UpdatePercentages()
@@ -104,6 +102,6 @@ public class ThreeDeeTiles : MonoBehaviour
             }
         }
 
-        if (UpdateTiles != null) UpdateTiles(grassTiles/totalGameTiles, corruptionTiles/totalGameTiles);
+        UpdateTiles?.Invoke(grassTiles/totalGameTiles, corruptionTiles/totalGameTiles);
     }
 }

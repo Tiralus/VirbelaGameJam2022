@@ -9,25 +9,53 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance;
 
     public GameUI gameUI;
+    [Tooltip("Percentage of grass tiles present for player to win")] 
+    public float playerPerc = 50f;
+    [Tooltip("Percentage of corruption tiles present for enemy to win")] 
+    public float enemyPerc = 50f;
 
     private bool gamePaused = false;
     public bool IsPaused() => gamePaused;
+
+    private bool inPlay = false;
+    public bool InPlay() => inPlay;
 
     private void Awake()
     {
         Instance = this;
 
+        inPlay = false;
         PauseGame(false);
+    }
+
+    private void Start()
+    {
+        ThreeDeeTiles.UpdateTiles += CheckEndGame;
+    }
+
+    private void OnDestroy()
+    {
+        ThreeDeeTiles.UpdateTiles -= CheckEndGame;
     }
 
     public void StartGame()
     {
-        //TODO: Activate game events / enemies
+        inPlay = true;
+    }
+
+    private void CheckEndGame(float grassPerc, float corruptionPerc)
+    {
+        if (!InPlay()) return;
+
+        if (grassPerc >= playerPerc || corruptionPerc == 0f)
+            EndGame(true);
+        else if (corruptionPerc >= enemyPerc || grassPerc == 0f)
+            EndGame(false);
     }
 
     public void EndGame(bool win)
     {
-        // TODO: Stop game events / enemies
+        inPlay = false;
 
         gameUI.ShowEndGameMenu(win);
     }
