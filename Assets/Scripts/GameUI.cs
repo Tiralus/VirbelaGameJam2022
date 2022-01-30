@@ -49,7 +49,7 @@ public class GameUI : MonoBehaviour
             cloud.UpdateLightningResource += UpdateLightningMeter;
         }
 
-        AudioManager.instance.PlayMusic("Drizzle");
+        
         mainMenu.SetActive(true);
 
         gameHUD.SetActive(false);
@@ -97,6 +97,7 @@ public class GameUI : MonoBehaviour
         mainMenu.SetActive(false);
         creditsPanel.SetActive(false);
         gameHUD.SetActive(true);
+
         AudioManager.instance.StopMusic("Drizzle");
         AudioManager.instance.PlayMusic("Thunderstorm");
 

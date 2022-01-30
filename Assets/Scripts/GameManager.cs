@@ -74,6 +74,9 @@ public class GameManager : MonoBehaviour
 
     public void StartLevel(int index)
     {
+        AudioManager.instance.StopMusic("Thunderstorm");
+        AudioManager.instance.PlayMusic("Drizzle");
+
         InPlay = false;
         PauseGame(false);
         Instantiate(Levels[levelIndex]);
