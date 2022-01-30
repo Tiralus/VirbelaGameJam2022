@@ -97,7 +97,7 @@ public class GameplayTile : BaseTile
     {
         base.Update();
 
-        if (!GameManager.Instance.InPlay()) return;
+        if (!GameManager.Instance.InPlay) return;
 
         switch (CurrentState)
         {

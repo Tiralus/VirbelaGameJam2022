@@ -75,7 +75,7 @@ public class Cloud : MonoBehaviour
 
     private void Update()
     {
-        if (GameManager.Instance.IsPaused() || !GameManager.Instance.InPlay()) return;
+        if (GameManager.Instance.IsPaused || !GameManager.Instance.InPlay) return;
 
         Vector3 direction = GetInputDirection();
 

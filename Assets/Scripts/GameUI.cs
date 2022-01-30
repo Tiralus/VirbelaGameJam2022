@@ -61,11 +61,13 @@ public class GameUI : MonoBehaviour
         corruptionMeter.maxValue = 1;
 
         ThreeDeeTiles.UpdateTiles += UpdateWinMeter;
+        GameManager.IsEndGame += ShowEndGameMenu;
     }
 
     private void OnDestroy()
     {
         ThreeDeeTiles.UpdateTiles -= UpdateWinMeter;
+        GameManager.IsEndGame -= ShowEndGameMenu;
     }
 
     private void UpdateWaterMeter(float value)
@@ -134,7 +136,17 @@ public class GameUI : MonoBehaviour
         pauseMenu.SetActive(false);
         endGameMenu.SetActive(false);
 
-        GameManager.Instance.ResetGame();
+        GameManager.Instance.ReloadLevel();
+    }
+
+    public void NextLevelButtonPressed()
+    {
+        mainMenu.SetActive(true);
+        gameHUD.SetActive(false);
+        pauseMenu.SetActive(false);
+        endGameMenu.SetActive(false);
+
+        GameManager.Instance.LoadNextLevel();
     }
 
     public void ShowEndGameMenu(bool win)
