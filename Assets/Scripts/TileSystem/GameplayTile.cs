@@ -18,7 +18,13 @@ public class GameplayTile : BaseTile
     public float CorruptionSpreadCooldown;
     public ParticleSystem Evil;
     public float EvilMaxRate;
-    
+
+    [Header("Fire")]
+    public float FireSpreadChanceRate;
+    public float FireSpreadCooldown;
+    public ParticleSystem Fire;
+    public float FireMaxRate;
+
     [Header("General")]
     public Collider Collider;
     public int CurrentState = 0;
@@ -28,8 +34,10 @@ public class GameplayTile : BaseTile
     private float _waterSaturation;
     private float _spreadCooldown;
     private float _corruptionSpreadChance;
+    private float _fireSpreadChance;
     private ParticleSystem.EmissionModule _foliageEmission;
     private ParticleSystem.EmissionModule _evilEmission;
+    private ParticleSystem.EmissionModule _fireEmission;
 
     private const int _corruptionState = 0;
     private const int _neutralState = 1;
@@ -161,6 +169,42 @@ public class GameplayTile : BaseTile
         if (_corruptionSpreadChance > 1f)
         {
             _corruptionSpreadChance = 1;
+        }
+    }
+
+    public void SpreadFire()
+    {
+        ParticleSystem.MinMaxCurve fireRate = _fireEmission.rateOverTime;
+        fireRate.constant = EvilMaxRate * _fireSpreadChance;
+        _fireEmission.rateOverTime = fireRate;
+
+        if (_spreadCooldown > 0f)
+        {
+            _spreadCooldown -= Time.deltaTime;
+            return;
+        }
+
+        _spreadCooldown = FireSpreadCooldown;
+
+        if (Random.value <= _fireSpreadChance)
+        {
+            _fireSpreadChance = 0f;
+
+            GameplayTile neighbor = SpreadToNeighbor();
+
+            if (neighbor != null)
+            {
+                neighbor._spreadCooldown = FireSpreadCooldown;
+            }
+
+            return;
+        }
+
+        _fireSpreadChance += FireSpreadChanceRate;
+
+        if (_fireSpreadChance > 1f)
+        {
+            _fireSpreadChance = 1;
         }
     }
 
