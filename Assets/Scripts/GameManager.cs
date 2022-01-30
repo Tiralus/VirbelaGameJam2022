@@ -74,8 +74,6 @@ public class GameManager : MonoBehaviour
 
     public void StartLevel(int index)
     {
-        Debug.Log("Start Level: " + index);
-
         InPlay = false;
         PauseGame(false);
         Instantiate(Levels[levelIndex]);

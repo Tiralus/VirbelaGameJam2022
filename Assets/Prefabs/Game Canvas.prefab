@@ -286,7 +286,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1249379651
 RectTransform:
   m_ObjectHideFlags: 0
@@ -589,7 +589,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &4303246655404154058
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1570,7 +1570,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &6574066758456492867
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3271,6 +3271,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Next Level Button (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 855130176921218143, guid: a14d44fbdf2fcaa4081c11284aa6348d,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2713771199390403545, guid: a14d44fbdf2fcaa4081c11284aa6348d,
         type: 3}
