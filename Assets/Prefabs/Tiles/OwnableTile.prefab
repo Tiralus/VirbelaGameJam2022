@@ -19746,7 +19746,7 @@ MonoBehaviour:
   FireSpreadChanceStart: 0.75
   FireTickCooldown: 1
   FireTickDamage: 2
-  MaxHealthByState: 640000006400000064000000c8000000
+  MaxHealthByState: 320000006400000064000000c8000000
   HealingCooldown: 1
   Smoke: {fileID: 4871676255944511226}
   SmokeMaxRate: 10
@@ -24849,15 +24849,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bcf87c7a9035d4945a68e045688801eb, type: 3}
---- !u!4 &4510872225613900565 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: bcf87c7a9035d4945a68e045688801eb,
-    type: 3}
-  m_PrefabInstance: {fileID: 4112753062653267198}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &3878169715789803951 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: bcf87c7a9035d4945a68e045688801eb,
+    type: 3}
+  m_PrefabInstance: {fileID: 4112753062653267198}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &4510872225613900565 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: bcf87c7a9035d4945a68e045688801eb,
     type: 3}
   m_PrefabInstance: {fileID: 4112753062653267198}
   m_PrefabAsset: {fileID: 0}
