@@ -27,10 +27,8 @@ public class GameUI : MonoBehaviour
     public Slider lightningMeter;
 
     [Header("Elements")]
-    public TextMeshProUGUI winLabel;
-
-    private string winText = "YOU WON!";
-    private string loseText = "GAME OVER";
+    public GameObject winTitle;
+    public GameObject loseTitle;
 
     private Color waterFillColor;
     private Color lowFillColor = Color.red;
@@ -141,9 +139,10 @@ public class GameUI : MonoBehaviour
 
     public void ShowEndGameMenu(bool win)
     {
-        winLabel.text = win ? winText : loseText;
-
         gameHUD.SetActive(false);
         endGameMenu.SetActive(true);
+
+        winTitle.SetActive(win);
+        loseTitle.SetActive(!win);
     }
 }
