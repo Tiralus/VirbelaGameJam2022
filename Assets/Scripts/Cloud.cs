@@ -9,6 +9,7 @@ public class Cloud : MonoBehaviour
     public Vector3 Min;
     public Vector3 Max;
     public LayerMask GroundLayer;
+    public Transform CameraTransform;
 
     [Header("Lightning")]
     public ParticleSystem lightning;
@@ -37,20 +38,11 @@ public class Cloud : MonoBehaviour
 
     private void Update()
     {
-        Vector3 position = transform.position;
-        
-        Vector3 groundPosition = Vector3.zero;
-        if (Physics.Raycast(position + (Vector3.up * 1000), Vector3.down, out RaycastHit hit, 10000f, GroundLayer.value))
-        {
-            groundPosition.y = hit.point.y;
-        }
-        
         Vector3 direction = GetInputDirection();
-        _movePosition += direction.normalized * Speed * Time.deltaTime;
-        _movePosition = ClampPosition(_movePosition);
 
-        transform.position = groundPosition + _movePosition;
-
+        transform.position += CameraTransform.TransformDirection(direction).normalized * Speed * Time.deltaTime;
+        transform.position = ClampPosition(transform.position);
+        
         rain.UpdateRainParticles(direction);
 
         if (IsKeyPressed(rainKey))
