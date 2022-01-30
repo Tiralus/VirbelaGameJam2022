@@ -389,7 +389,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &4303246655404154058
 RectTransform:
   m_ObjectHideFlags: 0
@@ -544,7 +544,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &6574066758456492867
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1219,6 +1219,7 @@ MonoBehaviour:
   waterMeter: {fileID: 7476470001676089986}
   fill: {fileID: 7476470000942441705}
   lowFillPerc: 0.25
+  winLabel: {fileID: 3878006740742867599}
 --- !u!1001 &1285672010
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1774,6 +1775,18 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 3046693511968834608}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &3878006740742867599 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2276979793409822399, guid: 73aeee06749984f40bfbcab1f4deb6b6,
+    type: 3}
+  m_PrefabInstance: {fileID: 3046693511968834608}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &3636641736345040481
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1904,7 +1917,7 @@ PrefabInstance:
     - target: {fileID: 6532331601860387788, guid: a14d44fbdf2fcaa4081c11284aa6348d,
         type: 3}
       propertyPath: m_text
-      value: RESTART
+      value: REPLAY
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a14d44fbdf2fcaa4081c11284aa6348d, type: 3}

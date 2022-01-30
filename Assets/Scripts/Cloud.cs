@@ -38,6 +38,8 @@ public class Cloud : MonoBehaviour
 
     private void Update()
     {
+        if (GameManager.Instance.IsPaused()) return;
+
         Vector3 direction = GetInputDirection();
 
         transform.position += CameraTransform.TransformDirection(direction).normalized * Speed * Time.deltaTime;
