@@ -19,6 +19,8 @@ public class Cloud : MonoBehaviour
     public ParticleSystem lightning;
     public float LightningChanceToStartFire;
     public int LightningDamage;
+    public float LightingCapacity;
+    public float LightingUseRate;
     
     [Header("Input")]
     public List<KeyCode> Left;
@@ -33,6 +35,8 @@ public class Cloud : MonoBehaviour
     public List<KeyCode> lightningKey;
 
     public Rain rain;
+    public PowerupSpawner PowerupSpawner;
+    public SphereCollider Collider;
 
     public Transform DropShadow;
 
@@ -42,11 +46,13 @@ public class Cloud : MonoBehaviour
 
     private float _CurrentSpeed;
     private Vector3 _CurrentDirection = Vector3.zero;
+    private float _lightingResource;
 
     private void Start()
     {
         rain = GetComponent<Rain>();
         Instance = this;
+        _lightingResource = LightingCapacity;
     }
 
     private void Update()
@@ -80,6 +86,7 @@ public class Cloud : MonoBehaviour
         transform.position = ClampPosition(transform.position);
         
         rain.UpdateRainParticles(_CurrentDirection * (_CurrentSpeed / FastSpeed));
+        PowerupSpawner.CheckSpawn();
 
         if (IsKeyPressed(rainKey))
             rain.EnableRain(!rain.IsRaining());
@@ -88,8 +95,10 @@ public class Cloud : MonoBehaviour
             ActivateLightning();
 
         BaseTile previousSelectedTile = _selectedTile;
-        
-        if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit) &&
+
+        Vector3 position = transform.position;
+        position.y += Collider.center.y + Collider.radius;
+        if (Physics.Raycast( position, Vector3.down, out RaycastHit hit) &&
             hit.collider != null)
         {
             BaseTile tile = hit.collider.GetComponent<BaseTile>();
@@ -231,8 +240,25 @@ public class Cloud : MonoBehaviour
 
     private void ActivateLightning()
     {
+        if (_lightingResource < LightingUseRate)
+        {
+            return;
+        }
+
+        _lightingResource -= LightingUseRate;
+        
         AudioManager.instance.PlaySound("Thunder");
         lightning.Play();
         IsLightning = true;
+    }
+
+    public void AddLightning(float lightningAmount)
+    {
+        _lightingResource += lightningAmount;
+
+        if (_lightingResource > LightingCapacity)
+        {
+            _lightingResource = LightingCapacity;
+        }
     }
 }
