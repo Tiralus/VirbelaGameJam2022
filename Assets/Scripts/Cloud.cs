@@ -19,8 +19,8 @@ public class Cloud : MonoBehaviour
     public ParticleSystem lightning;
     public float LightningChanceToStartFire;
     public int LightningDamage;
-    public float LightingCapacity;
-    public float LightingUseRate;
+    public float LightningCapacity;
+    public float LightningUseRate;
     
     [Header("Input")]
     public List<KeyCode> Left;
@@ -46,13 +46,15 @@ public class Cloud : MonoBehaviour
 
     private float _CurrentSpeed;
     private Vector3 _CurrentDirection = Vector3.zero;
-    private float _lightingResource;
+    private float _lightningResource;
+
+    public Action<float, float> UpdateLightningResource;
 
     private void Start()
     {
         rain = GetComponent<Rain>();
         Instance = this;
-        _lightingResource = LightingCapacity;
+        _lightningResource = LightningCapacity;
     }
 
     private void Update()
@@ -240,25 +242,29 @@ public class Cloud : MonoBehaviour
 
     private void ActivateLightning()
     {
-        if (_lightingResource < LightingUseRate)
+        if (_lightningResource < LightningUseRate)
         {
             return;
         }
 
-        _lightingResource -= LightingUseRate;
+        _lightningResource -= LightningUseRate;
         
         AudioManager.instance.PlaySound("Thunder");
         lightning.Play();
         IsLightning = true;
+
+        UpdateLightningResource?.Invoke(_lightningResource, LightningCapacity);
     }
 
     public void AddLightning(float lightningAmount)
     {
-        _lightingResource += lightningAmount;
+        _lightningResource += lightningAmount;
 
-        if (_lightingResource > LightingCapacity)
+        if (_lightningResource > LightningCapacity)
         {
-            _lightingResource = LightingCapacity;
+            _lightningResource = LightningCapacity;
         }
+
+        UpdateLightningResource?.Invoke(_lightningResource, LightningCapacity);
     }
 }
