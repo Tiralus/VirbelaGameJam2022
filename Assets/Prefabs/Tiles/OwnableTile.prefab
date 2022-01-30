@@ -47,6 +47,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8bd929609219c84c93adba87154c7b7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Collider: {fileID: 3853463974414434255}
   CurrentState: 0
   StateObjects:
   - {fileID: 1496837011958155862}

@@ -17,6 +17,7 @@ public class ThreeDeeTiles : MonoBehaviour
     public List<TilePairBridge> Tiles;
 
     private Tilemap _TilemapRef;
+    private List<GameplayTile> _gameplayTiles = new List<GameplayTile>();
 
     // Start is called before the first frame update
     void Start()
@@ -62,6 +63,7 @@ public class ThreeDeeTiles : MonoBehaviour
                                 GameplayTile newTile = newObject.GetComponent<GameplayTile>();
                                 if (newTile != null)
                                 {
+                                    _gameplayTiles.Add(newTile);
                                     newTile.ChangeStateByIdx(bridge.InitialState);
                                 }
                             }
@@ -71,5 +73,9 @@ public class ThreeDeeTiles : MonoBehaviour
             }
         }
 
+        foreach (GameplayTile gameplayTile in _gameplayTiles)
+        {
+            gameplayTile.FindNeighbors();
+        }
     }
 }
